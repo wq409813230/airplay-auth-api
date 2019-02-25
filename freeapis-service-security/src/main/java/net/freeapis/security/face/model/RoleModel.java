@@ -34,12 +34,7 @@ public class RoleModel extends BaseModel
 	private String roleCode;
 	private String roleName;
 	private String agencyCode;
-	private String spuPools;
-	private String produceRecordType;
 	private String lockStatus;
 	private Date lockDate;
 	private String lockUserId;
-
-
 }
-

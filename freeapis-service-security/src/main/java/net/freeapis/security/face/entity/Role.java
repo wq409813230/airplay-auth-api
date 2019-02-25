@@ -1,12 +1,11 @@
 package net.freeapis.security.face.entity;
 
-import java.util.Date;
+import lombok.Data;
+import net.freeapis.core.foundation.orm.BaseEntity;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import net.freeapis.core.foundation.orm.BaseEntity;
+import java.util.Date;
 /**
  * 
  * <pre>
@@ -29,6 +28,7 @@ import net.freeapis.core.foundation.orm.BaseEntity;
  *
  * </pre>
  */
+@Data
 @Entity
 @Table(name = "security_role")
 public class Role extends BaseEntity
@@ -37,76 +37,7 @@ public class Role extends BaseEntity
 	private String roleCode;
 	private String roleName;
 	private String agencyCode;
-	private String spuPools;
-	private String produceRecordType;
 	private String lockStatus;
 	private Date lockDate;
 	private String lockUserId;
-
-	@Column(name = "ROLE_CODE")
-	public String getRoleCode() {
-		return this.roleCode;
-	}
-	public void setRoleCode(String roleCode) {
-		this.roleCode = roleCode;
-	}
-	
-	@Column(name = "ROLE_NAME", nullable = false)
-	public String getRoleName() {
-		return this.roleName;
-	}
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
-	}
-	
-	@Column(name = "AGENCY_CODE", nullable = false)
-	public String getAgencyCode() {
-		return this.agencyCode;
-	}
-	public void setAgencyCode(String agencyCode) {
-		this.agencyCode = agencyCode;
-	}
-
-	@Column(name = "SPU_POOLS")
-	public String getSpuPools() {
-		return spuPools;
-	}
-
-	public void setSpuPools(String spuPools) {
-		this.spuPools = spuPools;
-	}
-
-	@Column(name = "LOCK_STATUS", nullable = false)
-	public String getLockStatus() {
-		return this.lockStatus;
-	}
-	public void setLockStatus(String lockStatus) {
-		this.lockStatus = lockStatus;
-	}
-	
-	@Column(name = "LOCK_DATE")
-	public Date getLockDate() {
-		return this.lockDate;
-	}
-	public void setLockDate(Date lockDate) {
-		this.lockDate = lockDate;
-	}
-
-	@Column(name = "LOCK_USER_ID")
-	public String getLockUserId() {
-		return this.lockUserId;
-	}
-	public void setLockUserId(String lockUserId) {
-		this.lockUserId = lockUserId;
-	}
-
-	@Column(name = "PRODUCE_RECORD_TYPE")
-	public String getProduceRecordType() {
-		return produceRecordType;
-	}
-
-	public void setProduceRecordType(String produceRecordType) {
-		this.produceRecordType = produceRecordType;
-	}
 }
-
