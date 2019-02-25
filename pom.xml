@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.freeapis</groupId>
+    <artifactId>prototype</artifactId>
+    <version>airpaly-auth-1.0</version>
+    <packaging>pom</packaging>
+    <name>AIRPLAY AUTH API Project</name>
+    <description>AIRPLAY设备授权系统API项目</description>
+    <url>http://www.freeapis.net</url>
+
+    <properties>
+        <freeapis.core.version>3.0.RELEASE</freeapis.core.version>
+        <springboot.version>1.5.9.RELEASE</springboot.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>net.freeapis</groupId>
+                <artifactId>core</artifactId>
+                <version>${freeapis.core.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.freeapis.core</groupId>
+                <artifactId>freeapis-core-foundation</artifactId>
+                <version>${freeapis.core.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>dubbo</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${springboot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+        <module>freeapis-common-config</module>
+        <module>freeapis-common-sso</module>
+
+        <module>freeapis-service-systemctl</module>
+        <module>freeapis-service-security</module>
+        <module>freeapis-service-agency</module>
+        <module>freeapis-service-asi</module>
+
+        <module>freeapis-web-systemctl</module>
+        <module>freeapis-web-security</module>
+        <module>freeapis-web-agency</module>
+        <module>freeapis-web-asi</module>
+    </modules>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${springboot.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- 开发环境,默认 -->
+        <profile>
+            <id>DEV</id>
+            <properties>
+                <env>DEV</env>
+                <maven.test.skip>false</maven.test.skip>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <!-- 内网调试环境 -->
+        <profile>
+            <id>DEBUG</id>
+            <properties>
+                <env>DEBUG</env>
+            </properties>
+        </profile>
+        <!-- 内网测试环境 -->
+        <profile>
+            <id>QA</id>
+            <properties>
+                <env>QA</env>
+            </properties>
+        </profile>
+        <!-- 准生产环境 -->
+        <profile>
+            <id>STAGING</id>
+            <properties>
+                <env>STAGING</env>
+            </properties>
+        </profile>
+        <!-- 生产环境 -->
+        <profile>
+            <id>PRODUCT</id>
+            <properties>
+                <env>PRODUCT</env>
+            </properties>
+        </profile>
+    </profiles>
+</project>

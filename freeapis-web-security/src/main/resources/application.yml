@@ -1,0 +1,7 @@
+server:
+  port: 8082
+  context-path: /freeapis-web-security
+
+freeapis:
+  doc:
+     module-name: 安全认证模块

@@ -1,0 +1,7 @@
+server:
+  port: 8086
+  context-path: /freeapis-web-agency
+
+freeapis:
+  doc:
+     module-name: 商家管理模块

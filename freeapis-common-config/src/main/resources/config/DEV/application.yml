@@ -1,0 +1,58 @@
+###DEV###
+#全局默认配置文件,放在config目录下,springboot先加载config目录下的配置文件
+server:
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  resources:
+    #开发环境指定此值,以便加载swagger文档静态资源,其他环境不需要此值
+    static-locations: classpath:/
+  redis:
+    host: 192.168.2.76
+    port: 6379
+    password: Ztwh2017!@#
+    database: 1
+    pool:
+      max-idle: 300
+      max-wait: 3000
+  data:
+    mongodb:
+      host: 192.168.2.76
+      port: 27017
+      database: ztms
+      username: ztms
+      password: Ztwh2017
+  jpa:
+    hibernate:
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+
+freeapis:
+  production_mode: N
+  enableAuth: N
+  requestLimit:
+    enable: N
+    period: 60
+    frequency:
+      nonget: 20
+      get: 30
+  doc:
+    enable: true
+    enable-module-register: false
+    name: 文档名称
+    host: http://192.168.2.74/
+    enable-db-register: true
+  concurrent:
+    core-pool-size: 10
+    max-pool-size: 20
+    queue-capacity: 10
+    thread-name-prefix: FreeapisExecutor-
+  core:
+    mysql:
+      url: jdbc:mysql://192.168.2.91:3306/auth?useUnicode=true&amp;characterEncoding=utf8
+      username: root
+      password: Ztwh2017!@#
+      initial-size: 1
+      max-active: 200
+      min-idle: 10
+      max-wait: 30000
