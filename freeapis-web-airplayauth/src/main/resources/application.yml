@@ -1,0 +1,7 @@
+server:
+  port: 8085
+  context-path: /freeapis-web-airplayauth
+
+freeapis:
+  doc:
+     module-name: 设备授权管理模块

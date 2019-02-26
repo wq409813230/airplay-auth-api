@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.freeapis</groupId>
+		<artifactId>prototype</artifactId>
+		<version>airpaly-auth-1.0</version>
+	</parent>
+	<groupId>net.freeapis.prototype</groupId>
+	<artifactId>freeapis-service-airplayauth</artifactId>
+	<name>Freeapis Service Airplayauth</name>
+	<url>http://www.freeapis.net</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.freeapis.prototype</groupId>
+			<artifactId>freeapis-common-config</artifactId>
+			<version>airpaly-auth-1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.freeapis.core</groupId>
+			<artifactId>freeapis-core-foundation</artifactId>
+            <version>${freeapis.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.freeapis.core</groupId>
+			<artifactId>freeapis-core-mysql</artifactId>
+            <version>${freeapis.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.freeapis.core</groupId>
+			<artifactId>freeapis-core-cache</artifactId>
+            <version>${freeapis.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.freeapis.core</groupId>
+			<artifactId>freeapis-core-lightkit</artifactId>
+			<version>${freeapis.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.freeapis.prototype</groupId>
+			<artifactId>freeapis-service-systemctl</artifactId>
+			<version>airpaly-auth-1.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+    </dependencies>
+</project>

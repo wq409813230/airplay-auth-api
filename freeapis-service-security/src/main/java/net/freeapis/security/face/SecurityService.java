@@ -99,13 +99,6 @@ public interface SecurityService extends BaseService<PrincipalModel, Principal>{
 	void resetPassword(Long userId) throws Exception;
 
 	/**
-	 * TODO.清理测试账号的数据,按照测试账号映射的用户名清理
-	 * @param userName
-	 * @param cleanType all:所有数据;biz:业务数据
-	 * @throws Exception
-	 */
-	void updateCleanTestData(String userName, String cleanType) throws Exception;
-	/**
 	 * TODO.获取或者刷新token,加入refreshToken的机制是为了方便client端,免去了无意义的登录,毕竟登录需要验证很多资源
 	 * 
 	 * @param token

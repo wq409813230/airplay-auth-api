@@ -74,9 +74,6 @@ public class SecurityServiceImpl extends BaseServiceImpl<PrincipalModel, Princip
     @Autowired
     private UserRoleDAO userRoleDAO;
 
-    @Autowired
-    private DictionaryService dictionaryService;
-
     @Override
     public PrincipalModel createSecurityInfoIfNotExist(String agencyCode, String loginId, UserType userType, IdType idType) throws Exception {
         LoginInfo currentLoginInfo = loginInfoDAO.findLoginInfoForLogin(agencyCode, loginId, userType, idType);
@@ -318,26 +315,6 @@ public class SecurityServiceImpl extends BaseServiceImpl<PrincipalModel, Princip
 
         // #5清除用户登录缓存
         this.cleanLoginCache(userId);
-    }
-
-    @Override
-    public void updateCleanTestData(String userName, String cleanType) throws Exception {
-        if(!SecurityConstants.USER_DATA_CLEAN_TYPE_ALL.equals(cleanType)
-                && !SecurityConstants.USER_DATA_CLEAN_TYPE_BIZ.equals(cleanType))
-            throw new DataValidateException(MessageConstants.DATA_VALIDATION_FAILED);
-
-        String mobile = dictionaryService.getValue(
-                CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_TEST_MOBILES, userName);
-        if(ValidationUtil.isEmpty(mobile))
-            throw new DataValidateException(MessageConstants.DATA_VALIDATION_FAILED);
-
-        LoginInfo currentLoginInfo = loginInfoDAO.findLoginInfo(CoreConstants.CODE_SUPER_ADMIN, mobile);
-        if (!ValidationUtil.isEmpty(currentLoginInfo)) {
-            Long currentUserId = currentLoginInfo.getUserId();
-            this.cleanLoginCache(currentUserId);
-            Redis.removeSingle(Principal.class,currentUserId.toString());
-            principalDAO.cleanTestData(currentUserId,cleanType);
-        }
     }
 
     @Override
