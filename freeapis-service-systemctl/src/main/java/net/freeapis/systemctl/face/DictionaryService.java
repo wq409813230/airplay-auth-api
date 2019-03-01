@@ -136,6 +136,8 @@ public interface DictionaryService extends BaseService<DictionaryModel,Dictionar
 	 * @throws Exception
 	 */
 	Page getEntryByPage(String agencyCode, String dictCode, Page page, String orderBy, String order) throws Exception;
+
+    Page queryEntryByPage(String agencyCode, String dictCode, String entryKey,Page page, String orderBy, String order) throws Exception;
 	/**
 	 * 根据字典编码获取字典中的所有值
 	 * @param agencyCode 商家编码

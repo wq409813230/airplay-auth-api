@@ -73,7 +73,7 @@ public interface DictionaryEntryDAO extends GenericDAO<DictionaryEntry>
 	 * @return 分页字典值列表
 	 * @throws Exception
 	 */
-	List<DictionaryEntry> findEntiesByPage(String agencyCode,String dictCode,Page page,String orderBy,String order) throws Exception;
+	List<DictionaryEntry> findEntiesByPage(String agencyCode,String dictCode,String entryKey,Page page,String orderBy,String order) throws Exception;
 	/**
 	 * TODO.获取字典中的所有值
 	 * @param agencyCode 商家编码

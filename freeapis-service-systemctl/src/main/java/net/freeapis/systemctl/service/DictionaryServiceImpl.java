@@ -197,11 +197,18 @@ public class DictionaryServiceImpl extends BaseServiceImpl<DictionaryModel, Dict
 	@Override
 	public Page getEntryByPage(String agencyCode, String dictCode, Page page, String orderBy, String order)
 			throws Exception {
-		page.setList(Bean.toModels(dictionaryEntryDAO.findEntiesByPage(agencyCode, dictCode, page, orderBy, order),DictionaryEntryModel.class));
+		page.setList(Bean.toModels(dictionaryEntryDAO.findEntiesByPage(agencyCode, dictCode, null,page, orderBy, order),DictionaryEntryModel.class));
 		return page;
 	}
 
-	@Override
+    @Override
+    public Page queryEntryByPage(String agencyCode, String dictCode,
+                                 String entryKey, Page page, String orderBy, String order) throws Exception {
+        page.setList(Bean.toModels(dictionaryEntryDAO.findEntiesByPage(agencyCode, dictCode,entryKey, page, orderBy, order),DictionaryEntryModel.class));
+        return page;
+    }
+
+    @Override
 	public List<DictionaryEntryModel> getEntries(String agencyCode, String dictCode) throws Exception {
 		return Bean.toModels(dictionaryEntryDAO.findEntries(agencyCode, dictCode),DictionaryEntryModel.class);
 	}

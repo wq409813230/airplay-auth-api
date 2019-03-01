@@ -88,7 +88,7 @@ public class DictionaryEntryDAOImpl extends GenericDAOImpl<DictionaryEntry>imple
 	}
 
 	@Override
-	public List<DictionaryEntry> findEntiesByPage(String agencyCode, String dictCode, Page page, String orderBy,
+	public List<DictionaryEntry> findEntiesByPage(String agencyCode, String dictCode,String entryKey,Page page, String orderBy,
 			String order) throws Exception {
 		StringBuilder sqlSufix = new StringBuilder();
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -100,6 +100,10 @@ public class DictionaryEntryDAOImpl extends GenericDAOImpl<DictionaryEntry>imple
 			sqlSufix.append(" AND DICT_CODE = :DICT_CODE ");
 			params.put("DICT_CODE", dictCode);
 		}
+		if(!ValidationUtil.isEmpty(entryKey)){
+		    sqlSufix.append(" AND ").append(like("ENTRY_KEY",":ENTRY_KEY"));
+            params.put("ENTRY_KEY", entryKey);
+        }
 		return this.paginate(sqlSufix.toString(), params, page, orderBy, order);
 	}
 

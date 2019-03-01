@@ -74,13 +74,15 @@ public class MachineModelResourcesV1 extends BaseResources {
     @FreeapisOperation(name = "getMachineModelByPage", ApiLevel = APILevel.SUPERADMIN, description = "后台分页获取机型信息")
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     public ResponseModel<Page> getMachineModelByPage(
+            @RequestParam(required = false) String modelCode,
             @RequestParam(value = ParamConstants.OFFSET,defaultValue = "0") int start,
             @RequestParam(value = ParamConstants.LENGTH,defaultValue  ="10") int length) throws Exception
     {
         Page page = new Page(length, start);
         return ResponseHelper.buildResponseModel(
-                dictionaryService.getEntryByPage(
-                        RequestContext.getAgencyCode(),AirplayauthConstants.DICT_CODE_MACHINE_MODEL,page,"entryKey","asc")
+                dictionaryService.queryEntryByPage(
+                        RequestContext.getAgencyCode(),
+                        AirplayauthConstants.DICT_CODE_MACHINE_MODEL,modelCode,page,"entryKey","asc")
         );
     }
 }
