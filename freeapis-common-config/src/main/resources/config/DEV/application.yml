@@ -8,20 +8,20 @@ spring:
     #开发环境指定此值,以便加载swagger文档静态资源,其他环境不需要此值
     static-locations: classpath:/
   redis:
-    host: 192.168.2.76
+    host: 192.168.2.253
     port: 6379
-    password: Ztwh2017!@#
+    password: myRedis
     database: 1
     pool:
       max-idle: 300
       max-wait: 3000
   data:
     mongodb:
-      host: 192.168.2.76
+      host: 192.168.2.253
       port: 27017
-      database: ztms
-      username: ztms
-      password: Ztwh2017
+      database: airplayauth
+      username: airplayauth
+      password:
   jpa:
     hibernate:
       naming:
@@ -40,7 +40,7 @@ freeapis:
     enable: true
     enable-module-register: false
     name: 文档名称
-    host: http://192.168.2.74/
+    host: http://192.168.2.253/
     enable-db-register: true
   concurrent:
     core-pool-size: 10
@@ -49,9 +49,9 @@ freeapis:
     thread-name-prefix: FreeapisExecutor-
   core:
     mysql:
-      url: jdbc:mysql://192.168.2.91:3306/auth?useUnicode=true&amp;characterEncoding=utf8
+      url: jdbc:mysql://192.168.2.253:3306/airplay-auth?useUnicode=true&amp;characterEncoding=utf8
       username: root
-      password: Ztwh2017!@#
+      password: root
       initial-size: 1
       max-active: 200
       min-idle: 10

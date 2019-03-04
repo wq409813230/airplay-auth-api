@@ -105,7 +105,7 @@ public class DeviceAuthResourcesV1 {
         return new String(decryptBytes);
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main1(String[] args) throws Exception{
         String content = "{\n" +
                 "\"company\":\"公司A\",\n" +
                 "\"machineModel\":\"windows96\",\n" +

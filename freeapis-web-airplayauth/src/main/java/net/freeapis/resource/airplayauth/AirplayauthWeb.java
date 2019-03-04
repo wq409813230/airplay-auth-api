@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
  * <p>
  * Description:平台控制模块应用入口
  * <p>
- * @author Administrator`
+ * @author Administrator
  * @date 2017年12月27日 13:27
  */
 @EnableRestAPI
