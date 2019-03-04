@@ -105,15 +105,15 @@ public class DeviceAuthResourcesV1 {
         return new String(decryptBytes);
     }
 
-    public static void main1(String[] args) throws Exception{
-        String content = "{\n" +
-                "\"company\":\"公司A\",\n" +
-                "\"machineModel\":\"windows96\",\n" +
-                "\"deviceMac\":\"12-de-23-08-ef-46\",\n" +
-                "\"privateKey\":\"a123456\"\n" +
+    public static void main(String[] args) throws Exception{
+        String content = "{" +
+                "\"company\":\"公司B\"," +
+                "\"machineModel\":\"windows95\"," +
+                "\"deviceMac\":\"12-de-23-08-ef-46\"," +
+                "\"privateKey\":\"a123456\"" +
                 "}";
 
-        String content2 = "YcJi8X68UjJh5RQDktieJTcQgcizMk7uycaJhS7IeKUycFuv0cmlYHq1crN+yQ5umaAw8EzbIk8gWC+31jXsHBlOUagOVZQhNdjXaIR5yxDjqdu9swBt4CSWM5wK4HHiYJy67qNZrD9zX9IDzonZoMzubI3wCZq+MdFicahPw8o=+akaf644VdnEk3i";
-        System.out.println(decrypt(content2,KEY));
+        String content2 = "YcJi8X68UjJh5RQDktieJTcQgcizMk7uycaJhS7IeKUycFuv0cmlYHq1crN+yQ5umaAw8EzbIk8gWC+31jXsHBlOUagOVZQhNdjXaIR5yxBDFLTOKwPoIQMk45cQAMlbEtefpD5ldkJy9fSMMYMu4QBArpU8dLiYtd/3G1FXN1o=";
+        System.out.println(encrypt(content,KEY));
     }
 }

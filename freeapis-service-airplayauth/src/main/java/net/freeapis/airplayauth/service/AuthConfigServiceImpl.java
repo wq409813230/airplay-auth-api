@@ -101,8 +101,8 @@ public class AuthConfigServiceImpl extends BaseServiceImpl<AuthConfigModel, Auth
         int authedCount = authInfoDAO.findAuthedCount(authConfig.getCompanyCode(),authConfig.getMachineModel());
         if(authedCount > 0){
             throw new DataValidateException(
-                    "已经为"+ authConfig.getCompanyName()
-                            +"授权机型"+ authConfig.getMachineModel() + authedCount +"台,不能删除授权配置.");
+                    "已经为【"+ authConfig.getCompanyName()
+                            +"】授权机型【"+ authConfig.getMachineModel() + "】【" + authedCount +"】台,不能删除授权配置.");
         }
         //#1删除授权码
         Redis.remove(
