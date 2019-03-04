@@ -49,6 +49,8 @@ public class MachineModelResourcesV1 extends BaseResources {
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseModel<DictionaryEntryModel> createMachineModel(
             @RequestBody DictionaryEntryModel dictionaryEntryModel) throws Exception {
+        dictionaryEntryModel.setAgencyCode(RequestContext.getAgencyCode());
+        dictionaryEntryModel.setDictCode(AirplayauthConstants.DICT_CODE_MACHINE_MODEL);
         return ResponseHelper.buildResponseModel(dictionaryService.createEntry(dictionaryEntryModel));
     }
 
