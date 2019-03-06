@@ -71,6 +71,9 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         //#1判断该设备是否之前认证成功过,如果认证成功则直接返回授权码
         AuthInfo authInfo = authInfoDAO.findAuthInfo(companyCode,machineModel,deviceMac);
         if(!ValidationUtil.isEmpty(authInfo)){
+            if(!authInfo.getPrivateKey().equals(privateKey)){
+                throw new DataValidateException("授权密钥校验失败.");
+            }
             AuthInfoModel result = Bean.toModel(authInfo,new AuthInfoModel());
             result.setCompanyName(company);
             return result;
@@ -111,6 +114,7 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         authInfo.setMachineModel(machineModel);
         authInfo.setDeviceMac(deviceMac);
         authInfo.setAuthCode(authCode);
+        authInfo.setPrivateKey(privateKey);
         authInfo.setRecDate(new Date());
         authInfo.setRecStatus(CoreConstants.COMMON_ACTIVE);
         authInfo.setRecUserId(CoreConstants.COMMON_0);

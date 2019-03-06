@@ -2,6 +2,7 @@ package net.freeapis.resource.airplayauth;
 
 import com.alibaba.fastjson.JSON;
 import net.freeapis.airplayauth.face.AuthInfoService;
+import net.freeapis.airplayauth.face.model.AuthInfoModel;
 import net.freeapis.core.rest.containers.APILevel;
 import net.freeapis.core.rest.containers.FreeapisOperation;
 import net.freeapis.core.rest.containers.FreeapisResource;
@@ -36,5 +37,6 @@ public class DeviceAuthResourcesV1 {
             @RequestBody String authBody) throws Exception{
         Map<String,String> authRequest = JSON.parseObject(authBody,Map.class);
         return authInfoService.createAuthInfo(authRequest);
+        //return new AuthInfoModel();
     }
 }

@@ -7,6 +7,7 @@ import net.freeapis.airplayauth.face.entity.AuthHistory;
 import net.freeapis.airplayauth.face.model.AuthInfoModel;
 import net.freeapis.core.foundation.constants.CoreConstants;
 import net.freeapis.core.foundation.sequence.SequenceGenerator;
+import net.freeapis.core.foundation.utils.PyKit;
 import net.freeapis.core.foundation.utils.ValidationUtil;
 import net.freeapis.core.rest.utils.ResponseHelper;
 import net.freeapis.core.rest.utils.ResponseModel;
@@ -28,6 +29,7 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * freeapis, Inc.
@@ -64,23 +66,23 @@ public class PacketSafeInterceptor {
     @Around("packetSafeGuarantee()")
     public Object makeSurePacketSafety(ProceedingJoinPoint pjp) throws Throwable {
         String aesKey = dictionaryService.getValue(
-                CoreConstants.CODE_SUPER_ADMIN,DictionaryConstants.DICT_CODE_SYS_PARAMS,"AES_KEY");
-        String authBody = decrypt(pjp.getArgs()[0].toString(),aesKey);
+                CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS, "AES_KEY");
+        String authBody = decrypt(pjp.getArgs()[0].toString(), aesKey);
 
         Object retVal = null;
         ResponseModel authResponse;
         try {
             retVal = pjp.proceed(new Object[]{authBody});
             authResponse = ResponseHelper.buildResponseModel(retVal);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
             authResponse = ResponseHelper.internal_server_error(e.getMessage());
         }
 
-        this.recordAuthHistory(authResponse);
+        this.recordAuthHistory(authBody, authResponse);
 
-        return encrypt(JSON.toJSONString(authResponse),aesKey);
+        return encrypt(JSON.toJSONString(authResponse), aesKey);
     }
 
     /**
@@ -121,29 +123,39 @@ public class PacketSafeInterceptor {
         return new String(decryptBytes);
     }
 
-    private void recordAuthHistory(final ResponseModel authResponse){
+    private void recordAuthHistory(final String authBody, final ResponseModel authResponse) {
         taskExecutor.execute(() -> {
-            AuthHistory authHistory = new AuthHistory();
-            authHistory.setSequenceNBR(sequenceGenerator.getNextValue());
-            authHistory.setRecDate(new Date());
-            authHistory.setRecStatus(CoreConstants.COMMON_ACTIVE);
-            authHistory.setRecUserId(CoreConstants.SYSTEM.toString());
-            authHistory.setAuthTime(new Date());
-
-            AuthInfoModel authInfo = (AuthInfoModel) authResponse.getResult();
-            if(ValidationUtil.isEmpty(authInfo)){
-                authHistory.setAuthSuccess(CoreConstants.COMMON_N);
-                authHistory.setFailedMessage(authResponse.getMessage());
-            }else{
-                authHistory.setAuthSuccess(CoreConstants.COMMON_Y);
-                authHistory.setCompanyCode(authInfo.getCompanyCode());
-                authHistory.setCompanyName(authInfo.getCompanyName());
-                authHistory.setDeviceMac(authInfo.getDeviceMac());
-                authHistory.setMachineModel(authInfo.getMachineModel());
-            }
             try {
+                AuthHistory authHistory = new AuthHistory();
+                authHistory.setSequenceNBR(sequenceGenerator.getNextValue());
+                authHistory.setRecDate(new Date());
+                authHistory.setRecStatus(CoreConstants.COMMON_ACTIVE);
+                authHistory.setRecUserId(CoreConstants.SYSTEM.toString());
+                authHistory.setAuthTime(new Date());
+
+                AuthInfoModel authInfo = (AuthInfoModel) authResponse.getResult();
+                if (ValidationUtil.isEmpty(authInfo)) {
+                    Map<String, String> authRequest = JSON.parseObject(authBody, Map.class);
+                    String company = authRequest.get("company");
+                    String machineModel = authRequest.get("machineModel");
+                    String deviceMac = authRequest.get("deviceMac");
+                    String companyCode = PyKit.pin(company);
+
+                    authHistory.setDeviceMac(deviceMac);
+                    authHistory.setMachineModel(machineModel);
+                    authHistory.setCompanyName(company);
+                    authHistory.setCompanyCode(companyCode);
+                    authHistory.setAuthSuccess(CoreConstants.COMMON_N);
+                    authHistory.setFailedMessage(authResponse.getMessage());
+                } else {
+                    authHistory.setAuthSuccess(CoreConstants.COMMON_Y);
+                    authHistory.setCompanyCode(authInfo.getCompanyCode());
+                    authHistory.setCompanyName(authInfo.getCompanyName());
+                    authHistory.setDeviceMac(authInfo.getDeviceMac());
+                    authHistory.setMachineModel(authInfo.getMachineModel());
+                }
                 authHistoryService.create(authHistory);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());
             }
