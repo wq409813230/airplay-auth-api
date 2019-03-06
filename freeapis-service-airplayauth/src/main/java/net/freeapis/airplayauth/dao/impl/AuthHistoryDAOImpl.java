@@ -36,23 +36,40 @@ import java.util.Map;
 @Repository(value="authHistoryDAO")
 public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements AuthHistoryDAO
 {
+    private static final String findSql = "SELECT " +
+            " a.SEQUENCE_NBR as sequenceNBR, " +
+            " a.MACHINE_MODEL AS machineModel , " +
+            " a.COMPANY_NAME AS companyName , " +
+            " a.COMPANY_CODE AS companyCode , " +
+            " a.DEVICE_MAC AS deviceMac , " +
+            " count(1) AS authedTimes , " +
+            " a.AUTH_SUCCESS AS authSuccess , " +
+            " a.AUTH_TIME AS authTime " +
+            "FROM " +
+            " airplayauth_auth_history a " +
+            "GROUP BY " +
+            " a.DEVICE_MAC " +
+            "HAVING " +
+            " 1 = 1 ";
+
 
     @Override
-    public List<AuthHistory> findByPage(String machineModel, String companyName, Page page) throws Exception{
-        StringBuilder sql = new StringBuilder();
+    public List<Map<String,Object>> findByPage(String machineModel, String companyName, Page page) throws Exception{
+        StringBuilder sql = new StringBuilder(findSql);
         Map<String,Object> params = Maps.newHashMap();
         if(!ValidationUtil.isEmpty(companyName)){
             sql.append(" AND (")
-                    .append(like("COMPANY_NAME",":COMPANY"))
+                    .append(like("a.COMPANY_NAME",":COMPANY"))
                     .append(" OR ")
-                    .append(like("COMPANY_CODE",":COMPANY"))
+                    .append(like("a.COMPANY_CODE",":COMPANY"))
                     .append(")");
             params.put("COMPANY",companyName);
         }
         if(!ValidationUtil.isEmpty(machineModel)){
-            sql.append(" AND ").append(like("MACHINE_MODEL",":MACHINE_MODEL"));
+            sql.append(" AND ").append(like("a.MACHINE_MODEL",":MACHINE_MODEL"));
             params.put("MACHINE_MODEL",machineModel);
         }
-        return this.paginate(sql.toString(),params,page,"authTime","desc");
+        sql.append(" ORDER BY a.AUTH_TIME DESC");
+        return this.findMapsByPage(sql.toString(),params,page);
     }
 }

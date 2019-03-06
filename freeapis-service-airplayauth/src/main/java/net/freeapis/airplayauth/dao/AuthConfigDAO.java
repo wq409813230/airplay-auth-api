@@ -5,6 +5,7 @@ import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.mysql.GenericDAO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -32,5 +33,5 @@ public interface AuthConfigDAO extends GenericDAO<AuthConfig>
 {
     AuthConfig findAuthConfig(String companyCode,String machineModel) throws Exception;
 
-    List<AuthConfig> findByPage(String company, String machineModel, Page page) throws Exception;
+    List<Map<String,Object>> findByPage(String company, String machineModel, Page page) throws Exception;
 }

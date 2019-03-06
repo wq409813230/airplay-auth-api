@@ -38,4 +38,3 @@ public class AuthConfigModel extends BaseModel
 	private Integer maxAuthCount;
 	private Date createTime;
 }
-

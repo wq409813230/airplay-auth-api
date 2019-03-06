@@ -163,9 +163,7 @@ public class AuthConfigServiceImpl extends BaseServiceImpl<AuthConfigModel, Auth
 
     @Override
     public Page getByPage(String company,String machineModel,Page page) throws Exception {
-        List<AuthConfigModel> result = Bean.toModels(
-                authConfigDAO.findByPage(company,machineModel,page),getModelClass());
-        page.setList(result);
+        page.setList(authConfigDAO.findByPage(company,machineModel,page));
         return page;
     }
 }

@@ -38,6 +38,25 @@ import java.util.Map;
 public class AuthConfigDAOImpl extends GenericDAOImpl<AuthConfig> implements AuthConfigDAO
 {
 
+    private static final String findSql = "SELECT " +
+            " A.SEQUENCE_NBR as sequenceNBR, " +
+            " A.MACHINE_MODEL AS machineModel , " +
+            " A.COMPANY_NAME AS companyName , " +
+            " A.PRIVATE_KEY AS privateKey , " +
+            " A.MAX_AUTH_COUNT AS maxAuthCount , " +
+            " A.CREATE_TIME AS createTime , " +
+            " ( " +
+            "  SELECT " +
+            "   COUNT(1) " +
+            "  FROM " +
+            "   AIRPLAYAUTH_AUTH_INFO B " +
+            "  WHERE " +
+            "   B.MACHINE_MODEL = A.MACHINE_MODEL " +
+            "  AND B.COMPANY_CODE = A.COMPANY_CODE " +
+            " ) AS authedCount " +
+            "FROM " +
+            " AIRPLAYAUTH_AUTH_CONFIG A WHERE 1=1 ";
+
     @Override
     public AuthConfig findAuthConfig(String companyCode, String machineModel) throws Exception {
         AuthConfig authConfig = Redis.getSingle(this.getEntityClass(),companyCode, machineModel);
@@ -55,22 +74,23 @@ public class AuthConfigDAOImpl extends GenericDAOImpl<AuthConfig> implements Aut
     }
 
     @Override
-    public List<AuthConfig> findByPage(String company, String machineModel, Page page) throws Exception{
-        StringBuilder sql = new StringBuilder();
+    public List<Map<String,Object>> findByPage(String company, String machineModel, Page page) throws Exception{
+        StringBuilder sql = new StringBuilder(findSql);
         Map<String,Object> params = Maps.newHashMap();
         if(!ValidationUtil.isEmpty(company)){
             sql.append(" AND (")
-                    .append(like("COMPANY_NAME",":COMPANY"))
+                    .append(like("A.COMPANY_NAME",":COMPANY"))
                     .append(" OR ")
-                    .append(like("COMPANY_CODE",":COMPANY"))
+                    .append(like("A.COMPANY_CODE",":COMPANY"))
                     .append(")");
             params.put("COMPANY",company);
         }
         if(!ValidationUtil.isEmpty(machineModel)){
-            sql.append(" AND ").append(like("MACHINE_MODEL",":MACHINE_MODEL"));
+            sql.append(" AND ").append(like("A.MACHINE_MODEL",":MACHINE_MODEL"));
             params.put("MACHINE_MODEL",machineModel);
         }
-        return this.paginate(sql.toString(),params,page,"createTime","desc");
+        sql.append(" ORDER BY A.CREATE_TIME DESC");
+        return this.findMapsByPage(sql.toString(),params,page);
     }
 
     @Override

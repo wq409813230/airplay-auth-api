@@ -1,17 +1,13 @@
 package net.freeapis.airplayauth.service;
 
-import net.freeapis.core.foundation.utils.Bean;
-import org.springframework.stereotype.Service;
-
 import net.freeapis.airplayauth.dao.AuthHistoryDAO;
-import net.freeapis.airplayauth.face.entity.AuthHistory;
-import net.freeapis.core.mysql.BaseServiceImpl;
 import net.freeapis.airplayauth.face.AuthHistoryService;
+import net.freeapis.airplayauth.face.entity.AuthHistory;
 import net.freeapis.airplayauth.face.model.AuthHistoryModel;
 import net.freeapis.core.foundation.model.Page;
+import net.freeapis.core.mysql.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  * 
@@ -43,9 +39,7 @@ public class AuthHistoryServiceImpl extends BaseServiceImpl<AuthHistoryModel, Au
 
     @Override
     public Page getByPage(String machineModel, String companyName, Page page) throws Exception {
-        List<AuthHistoryModel> result = Bean.toModels(
-                authHistoryDAO.findByPage(machineModel,companyName,page),getModelClass());
-        page.setList(result);
+        page.setList(authHistoryDAO.findByPage(machineModel,companyName,page));
         return page;
     }
 }

@@ -5,6 +5,7 @@ import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.mysql.GenericDAO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -30,5 +31,5 @@ import java.util.List;
  */
 public interface AuthHistoryDAO extends GenericDAO<AuthHistory>
 {
-    List<AuthHistory> findByPage(String machineModel, String companyName, Page page) throws Exception;
+    List<Map<String,Object>> findByPage(String machineModel, String companyName, Page page) throws Exception;
 }
