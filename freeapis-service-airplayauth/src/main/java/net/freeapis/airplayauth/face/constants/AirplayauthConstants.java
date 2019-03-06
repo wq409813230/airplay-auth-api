@@ -14,4 +14,6 @@ public class AirplayauthConstants {
     public static final String DICT_CODE_MACHINE_MODEL = "machineModel";
 
     public static final String CACHE_KEY_AUTH_CODES_POOL = "AIRPLAY_AUTH_CODES_POOL";
+
+    public static final String ALGORITHMSTR = "AES/ECB/PKCS5Padding";
 }

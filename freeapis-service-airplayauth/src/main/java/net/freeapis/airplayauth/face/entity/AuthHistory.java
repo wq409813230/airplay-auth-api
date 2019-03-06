@@ -36,9 +36,7 @@ public class AuthHistory extends BaseEntity
 {
 	private static final long serialVersionUID = 1L;
 	private String deviceMac;
-	private Long machineModelId;
-	private Long companyId;
-	private String machineModelName;
+	private String machineModel;
 	private String companyName;
 	private String companyCode;
 	private Date authTime;

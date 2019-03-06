@@ -1,9 +1,9 @@
 package net.freeapis.airplayauth.face;
 
-import net.freeapis.core.foundation.model.Page;
 import net.freeapis.airplayauth.face.entity.AuthHistory;
-import net.freeapis.core.foundation.orm.BaseService;
 import net.freeapis.airplayauth.face.model.AuthHistoryModel;
+import net.freeapis.core.foundation.model.Page;
+import net.freeapis.core.foundation.orm.BaseService;
 
 /**
  * 
@@ -29,7 +29,5 @@ import net.freeapis.airplayauth.face.model.AuthHistoryModel;
  */
 public interface AuthHistoryService extends BaseService<AuthHistoryModel,AuthHistory>
 {
-        AuthHistoryModel createAuthHistory(AuthHistoryModel authHistoryModel) throws Exception;
-        AuthHistoryModel updateAuthHistory(AuthHistoryModel authHistoryModel) throws Exception;
-        Page getByPage(Page page) throws Exception;
+        Page getByPage(String machineModel, String companyName, Page page) throws Exception;
 }

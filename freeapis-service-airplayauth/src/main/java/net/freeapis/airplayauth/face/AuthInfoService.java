@@ -36,5 +36,5 @@ public interface AuthInfoService extends BaseService<AuthInfoModel, AuthInfo> {
      * @return
      * @throws Exception
      */
-    String createAuthInfo(Map<String,String> authRequest) throws Exception;
+    AuthInfoModel createAuthInfo(Map<String,String> authRequest) throws Exception;
 }

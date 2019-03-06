@@ -1,5 +1,6 @@
 package net.freeapis.resource.airplayauth;
 
+import net.freeapis.airplayauth.face.AuthHistoryService;
 import net.freeapis.core.foundation.constants.ParamConstants;
 import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.rest.BaseResources;
@@ -8,10 +9,11 @@ import net.freeapis.core.rest.containers.FreeapisOperation;
 import net.freeapis.core.rest.containers.FreeapisResource;
 import net.freeapis.core.rest.utils.ResponseHelper;
 import net.freeapis.core.rest.utils.ResponseModel;
-import net.freeapis.airplayauth.face.AuthHistoryService;
-import net.freeapis.airplayauth.face.model.AuthHistoryModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <pre>
@@ -36,56 +38,21 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(value = "/1/authHistory")
-@FreeapisResource(module = "airplayauth", value = "AuthHistoryResourcesV1", description = "[AuthHistory]管理")
+@FreeapisResource(module = "airplayauth", value = "AuthHistoryResourcesV1", description = "认证历史记录管理")
 public class AuthHistoryResourcesV1 extends BaseResources {
 
     @Autowired
     private AuthHistoryService authHistoryService;
 
-    @FreeapisOperation(name = "createAuthHistory", ApiLevel = APILevel.SUPERADMIN, description = "创建[AuthHistory]", beanValidation = true)
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseModel<AuthHistoryModel> createAuthHistory(
-            @RequestBody AuthHistoryModel authHistoryModel) throws Exception {
-        return ResponseHelper.buildResponseModel(authHistoryService.createAuthHistory(authHistoryModel));
-    }
-
-    @FreeapisOperation(name = "deleteAuthHistory", ApiLevel = APILevel.SUPERADMIN, description = "删除$[AuthHistory]")
-    @RequestMapping(value = "", method = RequestMethod.DELETE)
-    public ResponseModel<String> deleteAuthHistory(
-            @RequestBody Long[] ids) throws Exception {
-        return ResponseHelper.buildResponseModel(authHistoryService.delete(ids));
-    }
-
-    @FreeapisOperation(name = "updateAuthHistory", ApiLevel = APILevel.SUPERADMIN, description = "修改[AuthHistory]",beanValidation = true)
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseModel<AuthHistoryModel> updateAuthHistory(
-            @PathVariable Long id,
-            @RequestBody AuthHistoryModel authHistoryModel) throws Exception {
-        authHistoryModel.setSequenceNBR(id);
-        return ResponseHelper.buildResponseModel(authHistoryService.updateAuthHistory(authHistoryModel));
-    }
-
-    @FreeapisOperation(name = "getAuthHistoryById", ApiLevel = APILevel.SUPERADMIN, description = "后台根据ID查询$[AuthHistory]")
-    @RequestMapping(value = "/manage/{id}", method = RequestMethod.GET)
-    public ResponseModel<AuthHistoryModel> getAuthHistoryById(
-            @PathVariable Long id) throws Exception {
-        return ResponseHelper.buildResponseModel(authHistoryService.get(id));
-    }
-
-    @FreeapisOperation(name = "getProfileById", ApiLevel = APILevel.ALL, description = "根据ID查询$[AuthHistory]简要信息")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseModel<AuthHistoryModel> getProfileById(
-            @PathVariable Long id) throws Exception {
-        return ResponseHelper.buildResponseModel(authHistoryService.get(id));
-    }
-
-    @FreeapisOperation(name = "getAuthHistoryByPage", ApiLevel = APILevel.SUPERADMIN, description = "后台分页获取$[AuthHistory]信息")
+    @FreeapisOperation(name = "getAuthHistoryByPage", ApiLevel = APILevel.SUPERADMIN, description = "后台分页获取认证历史记录信息")
     @RequestMapping(value = "/manage/page", method = RequestMethod.GET)
     public ResponseModel<Page> getAuthHistoryByPage(
+            @RequestParam(required = false) String machineModel,
+            @RequestParam(required = false) String companyName,
             @RequestParam(value = ParamConstants.OFFSET,defaultValue = "0") int start,
             @RequestParam(value = ParamConstants.LENGTH,defaultValue  ="10") int length) throws Exception
     {
         Page page = new Page(length, start);
-        return ResponseHelper.buildResponseModel(authHistoryService.getByPage(page));
+        return ResponseHelper.buildResponseModel(authHistoryService.getByPage(machineModel,companyName,page));
     }
 }

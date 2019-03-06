@@ -1,12 +1,11 @@
 package net.freeapis.airplayauth.face.entity;
 
-import java.util.Date;
-import javax.persistence.Column;
+import lombok.Data;
+import net.freeapis.core.foundation.orm.BaseEntity;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import lombok.Data;
-
-import net.freeapis.core.foundation.orm.BaseEntity;
+import java.util.Date;
 /**
  * 
  * <pre>
@@ -29,9 +28,9 @@ import net.freeapis.core.foundation.orm.BaseEntity;
  *
  * </pre>
  */
-@Data
 @Entity
 @Table(name = "airplayauth_auth_config")
+@Data
 public class AuthConfig extends BaseEntity
 {
 	private static final long serialVersionUID = 1L;

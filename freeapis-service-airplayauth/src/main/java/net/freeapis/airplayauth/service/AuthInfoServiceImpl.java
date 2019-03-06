@@ -11,6 +11,7 @@ import net.freeapis.core.cache.Redis;
 import net.freeapis.core.foundation.constants.CoreConstants;
 import net.freeapis.core.foundation.exceptions.DataValidateException;
 import net.freeapis.core.foundation.sequence.SequenceGenerator;
+import net.freeapis.core.foundation.utils.Bean;
 import net.freeapis.core.foundation.utils.PyKit;
 import net.freeapis.core.foundation.utils.ValidationUtil;
 import net.freeapis.core.mysql.BaseServiceImpl;
@@ -60,7 +61,7 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
     private SequenceGenerator sequenceGenerator;
 
     @Override
-    public String createAuthInfo(Map<String,String> authRequest) throws Exception {
+    public AuthInfoModel createAuthInfo(Map<String,String> authRequest) throws Exception {
         String company = authRequest.get("company");
         String machineModel = authRequest.get("machineModel");
         String deviceMac = authRequest.get("deviceMac");
@@ -70,7 +71,9 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         //#1判断该设备是否之前认证成功过,如果认证成功则直接返回授权码
         AuthInfo authInfo = authInfoDAO.findAuthInfo(companyCode,machineModel,deviceMac);
         if(!ValidationUtil.isEmpty(authInfo)){
-            return authInfo.getAuthCode();
+            AuthInfoModel result = Bean.toModel(authInfo,new AuthInfoModel());
+            result.setCompanyName(company);
+            return result;
         }
 
         //#2如果未认证则进行认证
@@ -113,6 +116,8 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         authInfo.setRecUserId(CoreConstants.COMMON_0);
         authInfoDAO.insert(authInfo);
 
-        return authCode;
+        AuthInfoModel result = Bean.toModel(authInfo,new AuthInfoModel());
+        result.setCompanyName(company);
+        return result;
     }
 }
