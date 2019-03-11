@@ -1,7 +1,0 @@
-server:
-  port: 8082
-  context-path: /freeapis-web-asi
-
-freeapis:
-  doc:
-     module-name: 动态表单模块

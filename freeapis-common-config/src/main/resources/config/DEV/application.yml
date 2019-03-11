@@ -15,13 +15,6 @@ spring:
     pool:
       max-idle: 300
       max-wait: 3000
-  data:
-    mongodb:
-      host: 192.168.2.253
-      port: 27017
-      database: airplayauth
-      username: airplayauth
-      password:
   jpa:
     hibernate:
       naming:

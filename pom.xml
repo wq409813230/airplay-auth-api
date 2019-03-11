@@ -52,13 +52,11 @@
         <module>freeapis-service-systemctl</module>
         <module>freeapis-service-security</module>
         <module>freeapis-service-agency</module>
-        <module>freeapis-service-asi</module>
         <module>freeapis-service-airplayauth</module>
 
         <module>freeapis-web-systemctl</module>
         <module>freeapis-web-security</module>
         <module>freeapis-web-agency</module>
-        <module>freeapis-web-asi</module>
         <module>freeapis-web-airplayauth</module>
     </modules>
 
