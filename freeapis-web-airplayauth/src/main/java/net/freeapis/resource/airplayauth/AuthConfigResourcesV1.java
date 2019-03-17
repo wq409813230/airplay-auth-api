@@ -1,9 +1,12 @@
 package net.freeapis.resource.airplayauth;
 
+import com.google.common.collect.Maps;
 import net.freeapis.airplayauth.face.AuthConfigService;
+import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
 import net.freeapis.airplayauth.face.model.AuthConfigModel;
 import net.freeapis.core.foundation.constants.MessageConstants;
 import net.freeapis.core.foundation.constants.ParamConstants;
+import net.freeapis.core.foundation.context.RequestContext;
 import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.rest.BaseResources;
 import net.freeapis.core.rest.containers.APILevel;
@@ -11,8 +14,12 @@ import net.freeapis.core.rest.containers.FreeapisOperation;
 import net.freeapis.core.rest.containers.FreeapisResource;
 import net.freeapis.core.rest.utils.ResponseHelper;
 import net.freeapis.core.rest.utils.ResponseModel;
+import net.freeapis.systemctl.face.DictionaryService;
+import net.freeapis.systemctl.face.constants.DictionaryConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * <pre>
@@ -42,6 +49,9 @@ public class AuthConfigResourcesV1 extends BaseResources {
 
     @Autowired
     private AuthConfigService authConfigService;
+
+    @Autowired
+    private DictionaryService dictionaryService;
 
     @FreeapisOperation(name = "createAuthConfig", ApiLevel = APILevel.SUPERADMIN, description = "创建设备授权配置")
     @RequestMapping(value = "", method = RequestMethod.POST)
@@ -84,5 +94,23 @@ public class AuthConfigResourcesV1 extends BaseResources {
     {
         Page page = new Page(length, start);
         return ResponseHelper.buildResponseModel(authConfigService.getByPage(company,machineModel,page));
+    }
+
+    @FreeapisOperation(name = "generateRSAKeyPair", ApiLevel = APILevel.SUPERADMIN, description = "生成RSA密钥对")
+    @RequestMapping(value = "/rsa/keyPair", method = RequestMethod.POST)
+    public ResponseModel<String> generateRSAKeyPair() throws Exception {
+        authConfigService.createRSAKeyPair();
+        return ResponseHelper.buildResponseModel(MessageConstants.SUCCEED);
+    }
+
+    @FreeapisOperation(name = "getRSAKeyPair", ApiLevel = APILevel.SUPERADMIN, description = "获取RSA密钥对")
+    @RequestMapping(value = "/rsa/keyPair", method = RequestMethod.GET)
+    public ResponseModel<Map<String,String>> getRSAKeyPair() throws Exception {
+        Map<String, String> map = Maps.newHashMap();
+        map.put("publicKey",dictionaryService.getValue(RequestContext.getAgencyCode(),
+                DictionaryConstants.DICT_CODE_SYS_PARAMS,AirplayauthConstants.DICT_KEY_RSA_PUBLIC_KEY));
+        map.put("privateKey",dictionaryService.getValue(RequestContext.getAgencyCode(),
+                DictionaryConstants.DICT_CODE_SYS_PARAMS,AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY));
+        return ResponseHelper.buildResponseModel(map);
     }
 }

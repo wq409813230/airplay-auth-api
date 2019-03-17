@@ -33,4 +33,5 @@ public interface AuthConfigService extends BaseService<AuthConfigModel,AuthConfi
         void deleteAuthConfig(Long id) throws Exception;
         AuthConfigModel updateAuthConfig(AuthConfigModel authConfigModel) throws Exception;
         Page getByPage(String company,String machineModel,Page page) throws Exception;
+        void createRSAKeyPair() throws Exception;
 }

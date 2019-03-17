@@ -5,6 +5,7 @@ import net.freeapis.airplayauth.face.AuthHistoryService;
 import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
 import net.freeapis.airplayauth.face.entity.AuthHistory;
 import net.freeapis.airplayauth.face.model.AuthInfoModel;
+import net.freeapis.airplayauth.utils.RSA;
 import net.freeapis.core.foundation.constants.CoreConstants;
 import net.freeapis.core.foundation.sequence.SequenceGenerator;
 import net.freeapis.core.foundation.utils.PyKit;
@@ -13,7 +14,6 @@ import net.freeapis.core.rest.utils.ResponseHelper;
 import net.freeapis.core.rest.utils.ResponseModel;
 import net.freeapis.systemctl.face.DictionaryService;
 import net.freeapis.systemctl.face.constants.DictionaryConstants;
-import org.apache.commons.codec.binary.Base64;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,9 +25,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 import java.util.Map;
 
@@ -59,15 +56,17 @@ public class PacketSafeInterceptor {
     @Autowired
     private SequenceGenerator sequenceGenerator;
 
-    @Pointcut("execution(* net.freeapis.resource.airplayauth.DeviceAuthResourcesV1.*(..))")
+    @Pointcut("execution(* net.freeapis.resource.airplayauth.DeviceAuthResourcesV1.doAuthDevice(String))")
     public void packetSafeGuarantee() {
     }
 
     @Around("packetSafeGuarantee()")
     public Object makeSurePacketSafety(ProceedingJoinPoint pjp) throws Throwable {
-        String aesKey = dictionaryService.getValue(
-                CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS, "AES_KEY");
-        String authBody = decrypt(pjp.getArgs()[0].toString(), aesKey);
+        String privateKey = dictionaryService.getValue(
+                CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS,
+                AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY);
+        String authBody = pjp.getArgs()[0].toString();
+        authBody = RSA.decryptByPrivate(authBody,privateKey);
 
         Object retVal = null;
         ResponseModel authResponse;
@@ -82,45 +81,7 @@ public class PacketSafeInterceptor {
 
         this.recordAuthHistory(authBody, authResponse);
 
-        return encrypt(JSON.toJSONString(authResponse), aesKey);
-    }
-
-    /**
-     * 加密
-     *
-     * @param content    加密的字符串
-     * @param encryptKey key值
-     * @return
-     * @throws Exception
-     */
-    private String encrypt(String content, String encryptKey) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        kgen.init(128);
-        Cipher cipher = Cipher.getInstance(AirplayauthConstants.ALGORITHMSTR);
-        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(encryptKey.getBytes(), "AES"));
-        byte[] b = cipher.doFinal(content.getBytes("utf-8"));
-        // 采用base64算法进行转码,避免出现中文乱码
-        return Base64.encodeBase64String(b);
-
-    }
-
-    /**
-     * 解密
-     *
-     * @param encryptStr 解密的字符串
-     * @param decryptKey 解密的key值
-     * @return
-     * @throws Exception
-     */
-    private String decrypt(String encryptStr, String decryptKey) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        kgen.init(128);
-        Cipher cipher = Cipher.getInstance(AirplayauthConstants.ALGORITHMSTR);
-        cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(decryptKey.getBytes(), "AES"));
-        // 采用base64算法进行转码,避免出现中文乱码
-        byte[] encryptBytes = Base64.decodeBase64(encryptStr);
-        byte[] decryptBytes = cipher.doFinal(encryptBytes);
-        return new String(decryptBytes);
+        return RSA.encryptByPrivate(JSON.toJSONString(authResponse), privateKey);
     }
 
     private void recordAuthHistory(final String authBody, final ResponseModel authResponse) {

@@ -7,6 +7,7 @@ import net.freeapis.airplayauth.face.AuthConfigService;
 import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
 import net.freeapis.airplayauth.face.entity.AuthConfig;
 import net.freeapis.airplayauth.face.model.AuthConfigModel;
+import net.freeapis.airplayauth.utils.RSA;
 import net.freeapis.core.cache.Redis;
 import net.freeapis.core.foundation.constants.MessageConstants;
 import net.freeapis.core.foundation.context.RequestContext;
@@ -20,12 +21,15 @@ import net.freeapis.core.foundation.utils.ValidationUtil;
 import net.freeapis.core.lightkit.$;
 import net.freeapis.core.mysql.BaseServiceImpl;
 import net.freeapis.systemctl.face.DictionaryService;
+import net.freeapis.systemctl.face.constants.DictionaryConstants;
 import net.freeapis.systemctl.face.model.DictionaryEntryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -165,5 +169,28 @@ public class AuthConfigServiceImpl extends BaseServiceImpl<AuthConfigModel, Auth
     public Page getByPage(String company,String machineModel,Page page) throws Exception {
         page.setList(authConfigDAO.findByPage(company,machineModel,page));
         return page;
+    }
+
+    @Override
+    public void createRSAKeyPair() throws Exception {
+        dictionaryService.deleteEntry(
+                RequestContext.getAgencyCode(),DictionaryConstants.DICT_CODE_SYS_PARAMS,
+                AirplayauthConstants.DICT_KEY_RSA_PUBLIC_KEY,AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY);
+
+        Map<String, Key> map = RSA.init();
+        String publicKey = RSA.getPublicKey(map);
+        String privateKey = RSA.getPrivateKey(map);
+
+        DictionaryEntryModel publicKeyEntry = new DictionaryEntryModel();
+        publicKeyEntry.setDictCode(DictionaryConstants.DICT_CODE_SYS_PARAMS);
+        publicKeyEntry.setEntryKey(AirplayauthConstants.DICT_KEY_RSA_PUBLIC_KEY);
+        publicKeyEntry.setEntryValue(publicKey);
+        dictionaryService.createEntry(publicKeyEntry);
+
+        DictionaryEntryModel privateKeyEntry = new DictionaryEntryModel();
+        privateKeyEntry.setDictCode(DictionaryConstants.DICT_CODE_SYS_PARAMS);
+        privateKeyEntry.setEntryKey(AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY);
+        privateKeyEntry.setEntryValue(privateKey);
+        dictionaryService.createEntry(privateKeyEntry);
     }
 }
