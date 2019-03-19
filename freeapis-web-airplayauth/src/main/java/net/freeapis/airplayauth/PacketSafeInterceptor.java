@@ -56,7 +56,7 @@ public class PacketSafeInterceptor {
     @Autowired
     private SequenceGenerator sequenceGenerator;
 
-    @Pointcut("execution(* net.freeapis.resource.airplayauth.DeviceAuthResourcesV1.doAuthDevice(String))")
+    @Pointcut("execution(* net.freeapis.resource.airplayauth.DeviceAuthResourcesV1.doAuthDevice(..))")
     public void packetSafeGuarantee() {
     }
 
@@ -65,8 +65,11 @@ public class PacketSafeInterceptor {
         String privateKey = dictionaryService.getValue(
                 CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS,
                 AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY);
-        String authBody = pjp.getArgs()[0].toString();
-        authBody = RSA.decryptByPrivate(authBody,privateKey);
+        Map<String,String> authBody = (Map)pjp.getArgs()[0];
+        String authInfo = authBody.get("authInfo");
+        authInfo = RSA.decryptByPrivate(authInfo,privateKey);
+        authBody.putAll(JSON.parseObject(authInfo,Map.class));
+        authBody.remove("authInfo");
 
         Object retVal = null;
         ResponseModel authResponse;
@@ -81,10 +84,16 @@ public class PacketSafeInterceptor {
 
         this.recordAuthHistory(authBody, authResponse);
 
-        return RSA.encryptByPrivate(JSON.toJSONString(authResponse), privateKey);
+        if(retVal != null){
+            String authResult = ((AuthInfoModel)retVal).getAuthCode();
+            authResult = RSA.encryptByPrivate(authResult,privateKey);
+            authResponse.setResult(authResult);
+        }
+
+        return authResponse;
     }
 
-    private void recordAuthHistory(final String authBody, final ResponseModel authResponse) {
+    private void recordAuthHistory(final Map<String,String> authBody, final ResponseModel authResponse) {
         taskExecutor.execute(() -> {
             try {
                 AuthHistory authHistory = new AuthHistory();
@@ -96,10 +105,9 @@ public class PacketSafeInterceptor {
 
                 AuthInfoModel authInfo = (AuthInfoModel) authResponse.getResult();
                 if (ValidationUtil.isEmpty(authInfo)) {
-                    Map<String, String> authRequest = JSON.parseObject(authBody, Map.class);
-                    String company = authRequest.get("company");
-                    String machineModel = authRequest.get("machineModel");
-                    String deviceMac = authRequest.get("deviceMac");
+                    String company = authBody.get("company");
+                    String machineModel = authBody.get("machineModel");
+                    String deviceMac = authBody.get("deviceMac");
                     String companyCode = PyKit.pin(company);
 
                     authHistory.setDeviceMac(deviceMac);

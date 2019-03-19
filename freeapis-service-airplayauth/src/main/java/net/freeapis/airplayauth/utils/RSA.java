@@ -1,6 +1,7 @@
 package net.freeapis.airplayauth.utils;
 
 import com.google.common.collect.Maps;
+import net.freeapis.core.foundation.utils.ByteUtil;
 
 import javax.crypto.Cipher;
 import java.security.*;
@@ -52,35 +53,31 @@ public class RSA {
     }
 
     /**
-     * 获取Base64编码的公钥字符串
+     * 获取Hex编码的公钥字符串
      */
     public static String getPublicKey(Map<String, Key> map) {
         return encryptBase64(map.get(KEY_RSA_PUBLIC_KEY).getEncoded());
     }
 
     /**
-     * 获取Base64编码的私钥字符串
+     * 获取Hex编码的私钥字符串
      */
     public static String getPrivateKey(Map<String, Key> map) {
         return encryptBase64(map.get(KEY_RSA_PRIVATE_KEY).getEncoded());
     }
 
-    /**
-     * BASE64 解码
-     *
-     * @param key 需要Base64解码的字符串
-     * @return 字节数组
-     */
+    public static byte[] decryptHexString(String key) {
+        return ByteUtil.hexString2Bytes(key);
+    }
+
+    public static String encryptHexString(byte[] key) {
+        return ByteUtil.toString(key,16);
+    }
+
     public static byte[] decryptBase64(String key) {
         return Base64.getDecoder().decode(key);
     }
 
-    /**
-     * BASE64 编码
-     *
-     * @param key 需要Base64编码的字节数组
-     * @return 字符串
-     */
     public static String encryptBase64(byte[] key) {
         return new String(Base64.getEncoder().encode(key));
     }
@@ -99,7 +96,7 @@ public class RSA {
             // 获得公钥  
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
             // 取得待加密数据
-            byte[] data = encryptingStr.getBytes("UTF-8");
+            byte[] data = encryptingStr.getBytes();
             KeyFactory factory;
             factory = KeyFactory.getInstance(KEY_RSA);
             PublicKey publicKey = factory.generatePublic(keySpec);
@@ -107,7 +104,7 @@ public class RSA {
             Cipher cipher = Cipher.getInstance(factory.getAlgorithm());
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             // 返回加密后由Base64编码的加密信息
-            return encryptBase64(cipher.doFinal(data));
+            return encryptHexString(cipher.doFinal(data));
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
@@ -128,14 +125,14 @@ public class RSA {
             // 获得私钥 
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
             // 获得待解密数据
-            byte[] data = decryptBase64(encryptedStr);
+            byte[] data = decryptHexString(encryptedStr);
             KeyFactory factory = KeyFactory.getInstance(KEY_RSA);
             PrivateKey privateKey = factory.generatePrivate(keySpec);
             // 对数据解密
             Cipher cipher = Cipher.getInstance(factory.getAlgorithm());
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             // 返回UTF-8编码的解密信息
-            return new String(cipher.doFinal(data), "UTF-8");
+            return new String(cipher.doFinal(data));
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
@@ -155,14 +152,14 @@ public class RSA {
             // 获得私钥  
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
             // 取得待加密数据
-            byte[] data = encryptingStr.getBytes("UTF-8");
+            byte[] data = encryptingStr.getBytes();
             KeyFactory factory = KeyFactory.getInstance(KEY_RSA);
             PrivateKey privateKey = factory.generatePrivate(keySpec);
             // 对数据加密 
             Cipher cipher = Cipher.getInstance(factory.getAlgorithm());
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
             // 返回加密后由Base64编码的加密信息
-            return encryptBase64(cipher.doFinal(data));
+            return encryptHexString(cipher.doFinal(data));
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
@@ -183,14 +180,14 @@ public class RSA {
             // 取得公钥  
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKeyBytes);
             // 取得待加密数据
-            byte[] data = decryptBase64(encryptedStr);
+            byte[] data = decryptHexString(encryptedStr);
             KeyFactory factory = KeyFactory.getInstance(KEY_RSA);
             PublicKey publicKey = factory.generatePublic(keySpec);
             // 对数据解密  
             Cipher cipher = Cipher.getInstance(factory.getAlgorithm());
             cipher.init(Cipher.DECRYPT_MODE, publicKey);
             // 返回UTF-8编码的解密信息
-            return new String(cipher.doFinal(data), "UTF-8");
+            return new String(cipher.doFinal(data));
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
@@ -220,7 +217,7 @@ public class RSA {
             Signature signature = Signature.getInstance(KEY_RSA_SIGNATURE);
             signature.initSign(key);
             signature.update(data);
-            return encryptBase64(signature.sign());
+            return encryptHexString(signature.sign());
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
@@ -251,7 +248,7 @@ public class RSA {
             Signature signature = Signature.getInstance(KEY_RSA_SIGNATURE);
             signature.initVerify(key);
             signature.update(data);
-            return signature.verify(decryptBase64(sign));
+            return signature.verify(decryptHexString(sign));
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());

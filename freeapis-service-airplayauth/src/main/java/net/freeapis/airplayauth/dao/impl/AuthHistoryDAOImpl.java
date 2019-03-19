@@ -44,9 +44,10 @@ public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements A
             " a.DEVICE_MAC AS deviceMac , " +
             " count(1) AS authedTimes , " +
             " a.AUTH_SUCCESS AS authSuccess , " +
-            " a.AUTH_TIME AS authTime " +
+            " a.AUTH_TIME AS authTime, " +
+            " a.FAILED_MESSAGE AS failedMessage " +
             "FROM " +
-            " airplayauth_auth_history a " +
+            " (SELECT * FROM AIRPLAYAUTH_AUTH_HISTORY ORDER BY SEQUENCE_NBR DESC) a " +
             "GROUP BY " +
             " a.DEVICE_MAC " +
             "HAVING " +

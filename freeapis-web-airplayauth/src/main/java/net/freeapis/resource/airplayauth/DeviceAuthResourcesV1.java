@@ -1,7 +1,9 @@
 package net.freeapis.resource.airplayauth;
 
+import com.alibaba.fastjson.JSON;
 import net.freeapis.airplayauth.face.AuthInfoService;
 import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
+import net.freeapis.airplayauth.utils.RSA;
 import net.freeapis.core.foundation.constants.CoreConstants;
 import net.freeapis.core.foundation.exceptions.DataNotFoundException;
 import net.freeapis.core.foundation.utils.ValidationUtil;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * freeapis,Inc.
@@ -41,10 +45,9 @@ public class DeviceAuthResourcesV1 {
     @FreeapisOperation(name = "doAuthDevice", ApiLevel = APILevel.ALL, description = "设备认证", needAuth = false)
     @RequestMapping(value = "", method = RequestMethod.POST)
     public Object doAuthDevice(
-            @RequestBody String authBody) throws Exception{
-        //Map<String,String> authRequest = JSON.parseObject(authBody,Map.class);
-        //return authInfoService.createAuthInfo(authRequest);
-        return authBody;
+            @RequestBody Map<String,String> authBody) throws Exception{
+        return authInfoService.createAuthInfo(authBody);
+        //return authBody;
     }
 
     @FreeapisOperation(name = "getPublicKey", ApiLevel = APILevel.ALL, description = "获取RSA加密公钥", needAuth = false)
@@ -57,5 +60,15 @@ public class DeviceAuthResourcesV1 {
             throw new DataNotFoundException("RSA公钥未生成,请联系管理员.");
         }
         return ResponseHelper.buildResponseModel(publicKey);
+    }
+
+    @FreeapisOperation(name = "encryptTest", ApiLevel = APILevel.ALL, description = "encryptTest", needAuth = false)
+    @RequestMapping(value = "/testEncrypt", method = RequestMethod.POST)
+    public String encryptTest(
+            @RequestBody String authBody) throws Exception{
+        String publicKey = dictionaryService.getValue(
+                CoreConstants.CODE_SUPER_ADMIN,
+                DictionaryConstants.DICT_CODE_SYS_PARAMS,AirplayauthConstants.DICT_KEY_RSA_PUBLIC_KEY);
+        return RSA.encryptByPublic(authBody,publicKey);
     }
 }
