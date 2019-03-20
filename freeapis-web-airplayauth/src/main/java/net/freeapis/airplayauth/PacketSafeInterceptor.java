@@ -66,10 +66,10 @@ public class PacketSafeInterceptor {
                 CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS,
                 AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY);
         Map<String,String> authBody = (Map)pjp.getArgs()[0];
-        String authInfo = authBody.get("authInfo");
+        String authInfo = authBody.get("authinfo");
         authInfo = RSA.decryptByPrivate(authInfo,privateKey);
         authBody.putAll(JSON.parseObject(authInfo,Map.class));
-        authBody.remove("authInfo");
+        authBody.remove("authinfo");
 
         Object retVal = null;
         ResponseModel authResponse;
@@ -105,9 +105,9 @@ public class PacketSafeInterceptor {
 
                 AuthInfoModel authInfo = (AuthInfoModel) authResponse.getResult();
                 if (ValidationUtil.isEmpty(authInfo)) {
-                    String company = authBody.get("company");
-                    String machineModel = authBody.get("machineModel");
-                    String deviceMac = authBody.get("deviceMac");
+                    String company = authBody.get("org");
+                    String machineModel = authBody.get("dev");
+                    String deviceMac = authBody.get("mac");
                     String companyCode = PyKit.pin(company);
 
                     authHistory.setDeviceMac(deviceMac);

@@ -62,10 +62,10 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
 
     @Override
     public AuthInfoModel createAuthInfo(Map<String,String> authRequest) throws Exception {
-        String company = authRequest.get("company");
-        String machineModel = authRequest.get("machineModel");
-        String deviceMac = authRequest.get("deviceMac");
-        String privateKey = authRequest.get("privateKey");
+        String company = authRequest.get("org");
+        String machineModel = authRequest.get("dev");
+        String deviceMac = authRequest.get("mac");
+        String privateKey = authRequest.get("code");
         String companyCode = PyKit.pin(company);
 
         //#1判断该设备是否之前认证成功过,如果认证成功则直接返回授权码

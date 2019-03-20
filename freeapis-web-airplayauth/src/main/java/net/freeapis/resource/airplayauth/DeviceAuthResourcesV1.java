@@ -47,7 +47,6 @@ public class DeviceAuthResourcesV1 {
     public Object doAuthDevice(
             @RequestBody Map<String,String> authBody) throws Exception{
         return authInfoService.createAuthInfo(authBody);
-        //return authBody;
     }
 
     @FreeapisOperation(name = "getPublicKey", ApiLevel = APILevel.ALL, description = "获取RSA加密公钥", needAuth = false)
@@ -59,7 +58,7 @@ public class DeviceAuthResourcesV1 {
         if(ValidationUtil.isEmpty(publicKey)){
             throw new DataNotFoundException("RSA公钥未生成,请联系管理员.");
         }
-        return ResponseHelper.buildResponseModel(publicKey);
+        return ResponseHelper.buildResponseModel(RSA.publicPem(publicKey));
     }
 
     @FreeapisOperation(name = "encryptTest", ApiLevel = APILevel.ALL, description = "encryptTest", needAuth = false)
