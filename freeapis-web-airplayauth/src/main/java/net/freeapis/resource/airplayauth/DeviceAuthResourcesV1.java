@@ -50,24 +50,14 @@ public class DeviceAuthResourcesV1 {
     }
 
     @FreeapisOperation(name = "getPublicKey", ApiLevel = APILevel.ALL, description = "获取RSA加密公钥", needAuth = false)
-    @RequestMapping(value = "/rsa/publicKey", method = RequestMethod.GET)
-    public ResponseModel<String> getPublicKey() throws Exception {
+    @RequestMapping(value = "/rsa/publicKey", method = RequestMethod.GET,produces = "text/html")
+    public String getPublicKey() throws Exception {
         String publicKey = dictionaryService.getValue(
                 CoreConstants.CODE_SUPER_ADMIN,
                 DictionaryConstants.DICT_CODE_SYS_PARAMS,AirplayauthConstants.DICT_KEY_RSA_PUBLIC_KEY);
         if(ValidationUtil.isEmpty(publicKey)){
-            throw new DataNotFoundException("RSA公钥未生成,请联系管理员.");
+            return "RSA公钥未生成,请联系管理员.";
         }
-        return ResponseHelper.buildResponseModel(RSA.publicPem(publicKey));
-    }
-
-    @FreeapisOperation(name = "encryptTest", ApiLevel = APILevel.ALL, description = "encryptTest", needAuth = false)
-    @RequestMapping(value = "/testEncrypt", method = RequestMethod.POST)
-    public String encryptTest(
-            @RequestBody String authBody) throws Exception{
-        String publicKey = dictionaryService.getValue(
-                CoreConstants.CODE_SUPER_ADMIN,
-                DictionaryConstants.DICT_CODE_SYS_PARAMS,AirplayauthConstants.DICT_KEY_RSA_PUBLIC_KEY);
-        return RSA.encryptByPublic(authBody,publicKey);
+        return RSA.publicPem(publicKey);
     }
 }
