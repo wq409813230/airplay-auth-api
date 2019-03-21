@@ -1,6 +1,7 @@
 package net.freeapis.airplayauth;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Maps;
 import net.freeapis.airplayauth.face.AuthHistoryService;
 import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
 import net.freeapis.airplayauth.face.entity.AuthHistory;
@@ -85,13 +86,15 @@ public class PacketSafeInterceptor {
         this.recordAuthHistory(authBody, authResponse);
 
         String clientPublicKey = authBody.get("pubkey");
-        authResponse.setMessage(RSA.encryptByClientPubKey(authResponse.getMessage(),clientPublicKey));
-        if(retVal != null){
-            String authResult = ((AuthInfoModel)retVal).getAuthCode();
-            authResult = RSA.encryptByClientPubKey(authResult,clientPublicKey);
-            authResponse.setResult(authResult);
-        }
-        return JSON.toJSONString(authResponse);
+        int httpStatus = authResponse.getStatus();
+        Map<String,Object> responsePacket = Maps.newHashMap();
+        Map<String,String> packetResult = Maps.newHashMap();
+        packetResult.put("mac",authBody.get("mac"));
+        packetResult.put("status",httpStatus == 200? "yes" : "no");
+        responsePacket.put("result",RSA.encryptByClientPubKey(JSON.toJSONString(packetResult),clientPublicKey));
+        responsePacket.put("reason",authResponse.getMessage());
+
+        return JSON.toJSONString(responsePacket);
     }
 
     private void recordAuthHistory(final Map<String,String> authBody, final ResponseModel authResponse) {
