@@ -1,17 +1,13 @@
 package net.freeapis.resource.airplayauth;
 
-import com.alibaba.fastjson.JSON;
 import net.freeapis.airplayauth.face.AuthInfoService;
 import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
 import net.freeapis.airplayauth.utils.RSA;
 import net.freeapis.core.foundation.constants.CoreConstants;
-import net.freeapis.core.foundation.exceptions.DataNotFoundException;
 import net.freeapis.core.foundation.utils.ValidationUtil;
 import net.freeapis.core.rest.containers.APILevel;
 import net.freeapis.core.rest.containers.FreeapisOperation;
 import net.freeapis.core.rest.containers.FreeapisResource;
-import net.freeapis.core.rest.utils.ResponseHelper;
-import net.freeapis.core.rest.utils.ResponseModel;
 import net.freeapis.systemctl.face.DictionaryService;
 import net.freeapis.systemctl.face.constants.DictionaryConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +39,14 @@ public class DeviceAuthResourcesV1 {
     private DictionaryService dictionaryService;
 
     @FreeapisOperation(name = "doAuthDevice", ApiLevel = APILevel.ALL, description = "设备认证", needAuth = false)
-    @RequestMapping(value = "", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST,produces = {"text/html","text/plain"})
     public Object doAuthDevice(
             @RequestBody Map<String,String> authBody) throws Exception{
         return authInfoService.createAuthInfo(authBody);
     }
 
     @FreeapisOperation(name = "getPublicKey", ApiLevel = APILevel.ALL, description = "获取RSA加密公钥", needAuth = false)
-    @RequestMapping(value = "/rsa/publicKey", method = RequestMethod.GET,produces = "text/html")
+    @RequestMapping(value = "/rsa/publicKey", method = RequestMethod.GET,produces = {"text/html","text/plain"})
     public String getPublicKey() throws Exception {
         String publicKey = dictionaryService.getValue(
                 CoreConstants.CODE_SUPER_ADMIN,

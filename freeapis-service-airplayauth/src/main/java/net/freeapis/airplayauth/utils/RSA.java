@@ -7,7 +7,6 @@ import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
@@ -109,7 +108,7 @@ public class RSA {
             factory = KeyFactory.getInstance(KEY_RSA);
             PublicKey publicKey = factory.generatePublic(keySpec);
             // 对数据加密  
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             // 返回加密后由Base64编码的加密信息
             return encryptHexString(cipher.doFinal(data));
@@ -325,6 +324,13 @@ public class RSA {
         }
     }
 
+    public static String encryptByClientPubKey(String source, String clientPublicKey) {
+        clientPublicKey = clientPublicKey
+                .replaceAll("-{5}[BEGIN|END].+-{5}","")
+                .replaceAll("\n","");
+        return RSA.encryptByPublic(source,clientPublicKey);
+    }
+
     /**
      * 测试方法
      */
@@ -362,8 +368,11 @@ public class RSA {
         // 验证签名
         boolean status = verify(enStr2, publicKey, sign);
         System.out.println("状态:" + status);*/
-        String privateData = "a73355a375b1d89d8893a12b58aac92c0d0bc258cda92757b44f25db816cb3324c7605ab5c70fdb10c4a45ebdc5a82e0faae7cc8186aef155dabc63dbccc0834798f2f86bf4924fef810e0199ced963812258c30c7cc3cdc3d196713fdf11fc5e662283aab1d097f993fa07166a83d3e63f4d6da4652ed9bad99d40b9c995611";
-        String privateKey = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAK7zhKC4F2wOggAH5FuYsRe4KEnBtahtOaJZDcJyATTH2YNPZfG0YUBomW5xrYJ6-FsoKnqx4Whi_Wa-l6FnetW2IZBmo1tpU7nZ_GIQrpn6VqqY7lgYQ7KurCpc3dadd81m0pHhoHkaHRaoeEfrKnvlr7WC5NE_-jNpOKOrvHnvAgMBAAECgYA6raiVM0l_z5ngosT_x8XV-8lfe54PIJtNDWtlBVHMPx-AQDgkCmj37l1Pwsb8VXxJLr6YqmK83T66oEBBPXDgAM5QeRuaXiFCUTN6UM1_DR1kMUsto2hjK4CfqW7W5G7y-43ZOga5iXrv_XSndZCyUT27QzjauTOWIXqBa8_ZQQJBAOJgBY0Di4Wgonk7ehqFJxe7OA0WryKT8kXtMaiJp3ZSWUSHKYII1D-UylD0sDMPZpE_AZQJP9h30JUoO6crAc8CQQDF2LQwokCVVcxbpKVXPK3AL9ey-Fc05yuRtXdS2qZlv2chdT6EgxfWHOas9804Y6pJznZb499dZYizqAVGma3hAkEAgim6J1n5eI1jvpePXv5e-wtAcG4xp40wCjsXiZQVATjacUfSex1-hUyVhDUdt05MqIl069zhpCNIgOtQWY-mCwJAL1ReFtxZ0t_JmYrTuwDbGATZ9wiN5CwBMkRVHU8NS330b_6aTB0IUMJtNKe7QmglTq7DhcwHnVIy17e0O2V8QQJAYHtjqYcveRw64BRU1Y6Smj0DI4sJ0Y158tBV9HGU6l8xerhmAPDD0wA8ThZPzEiFffQxfcadG2IHuVkxlXD9Rw";
-        System.out.println(RSA.decryptByPrivate(privateData,privateKey));
+        String privateData = "hello";
+        String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnyEnD36fBM7I753USQrc3aOzT" +
+                "8jnDU4cxKrWuckTszPgx1bYTpMlh79nx2Eoeu+mmpeHiKQCV/f/MtCKqmTZLTDOL" +
+                "vLHmNiRGl538qRno6uEot4CujjISVoA7r1cp+54HtQg7fpJnQCnJEU0V60GuEtqv" +
+                "JOrUSb0Lg5xSqWUqowIDAQAB";
+        System.out.println(RSA.encryptByPublic(privateData,publicKey));
     }
 }

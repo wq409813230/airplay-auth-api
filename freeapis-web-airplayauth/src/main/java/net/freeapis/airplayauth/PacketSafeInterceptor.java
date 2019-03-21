@@ -84,13 +84,14 @@ public class PacketSafeInterceptor {
 
         this.recordAuthHistory(authBody, authResponse);
 
+        String clientPublicKey = authBody.get("pubkey");
+        authResponse.setMessage(RSA.encryptByClientPubKey(authResponse.getMessage(),clientPublicKey));
         if(retVal != null){
             String authResult = ((AuthInfoModel)retVal).getAuthCode();
-            authResult = RSA.encryptByPrivate(authResult,privateKey);
+            authResult = RSA.encryptByClientPubKey(authResult,clientPublicKey);
             authResponse.setResult(authResult);
         }
-
-        return authResponse;
+        return JSON.toJSONString(authResponse);
     }
 
     private void recordAuthHistory(final Map<String,String> authBody, final ResponseModel authResponse) {

@@ -72,7 +72,7 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         AuthInfo authInfo = authInfoDAO.findAuthInfo(companyCode,machineModel,deviceMac);
         if(!ValidationUtil.isEmpty(authInfo)){
             if(!authInfo.getPrivateKey().equals(privateKey)){
-                throw new DataValidateException("授权密钥校验失败.");
+                throw new DataValidateException("Invalid auth password.");
             }
             AuthInfoModel result = Bean.toModel(authInfo,new AuthInfoModel());
             result.setCompanyName(company);
@@ -85,18 +85,18 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
                 dictionaryService.getEntry(
                         CoreConstants.CODE_SUPER_ADMIN,AirplayauthConstants.DICT_CODE_MACHINE_MODEL,machineModel);
         if(ValidationUtil.isEmpty(machineModelEntry)){
-            throw new DataValidateException("机型校验失败.");
+            throw new DataValidateException("Invalid machine model.");
         }
 
         //#2-2获取授权配置
         AuthConfig authConfig = authConfigDAO.findAuthConfig(companyCode,machineModel);
         if(ValidationUtil.isEmpty(authConfig)){
-            throw new DataValidateException("未找到授权信息.");
+            throw new DataValidateException("not found authConfig.");
         }
 
         //#2-3校验密钥是否正确
         if(!authConfig.getPrivateKey().equals(privateKey)){
-            throw new DataValidateException("授权密钥校验失败.");
+            throw new DataValidateException("Invalid auth password.");
         }
 
         //#2-4获取授权码
@@ -104,7 +104,7 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
                 AirplayauthConstants.CACHE_KEY_AUTH_CODES_POOL,companyCode,machineModel);
         String authCode = Redis.spop(authCodePoolKey);
         if(ValidationUtil.isEmpty(authCode)){
-            throw new DataValidateException("未获取到可用的授权码,联系管理员增加授权数量.");
+            throw new DataValidateException("can not obtain authorized code,please contact admin to increase device count");
         }
 
         //#2-5记录认证信息
