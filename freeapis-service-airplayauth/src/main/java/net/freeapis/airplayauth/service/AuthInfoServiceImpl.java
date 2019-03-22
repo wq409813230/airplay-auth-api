@@ -1,6 +1,7 @@
 package net.freeapis.airplayauth.service;
 
 import net.freeapis.airplayauth.dao.AuthConfigDAO;
+import net.freeapis.airplayauth.dao.AuthHistoryDAO;
 import net.freeapis.airplayauth.dao.AuthInfoDAO;
 import net.freeapis.airplayauth.face.AuthInfoService;
 import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
@@ -60,6 +61,9 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
     @Autowired
     private SequenceGenerator sequenceGenerator;
 
+    @Autowired
+    private AuthHistoryDAO authHistoryDAO;
+
     @Override
     public AuthInfoModel createAuthInfo(Map<String,String> authRequest) throws Exception {
         String company = authRequest.get("org");
@@ -69,10 +73,16 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         String companyCode = PyKit.pin(company);
 
         //#1判断该设备是否之前认证成功过,如果认证成功则直接返回授权码
+        AuthConfig authConfig = authConfigDAO.findAuthConfig(companyCode,machineModel);
         AuthInfo authInfo = authInfoDAO.findAuthInfo(companyCode,machineModel,deviceMac);
         if(!ValidationUtil.isEmpty(authInfo)){
             if(!authInfo.getPrivateKey().equals(privateKey)){
                 throw new DataValidateException("Invalid auth password.");
+            }
+            //#1-1判断认证次数是否超过上限
+            int authSuccessCount = authHistoryDAO.findAuthSuccessCount(companyCode,machineModel,deviceMac);
+            if(authConfig.getMaxAuthCount() <= authSuccessCount){
+                throw new DataValidateException("can not beyond the limit of auth count");
             }
             AuthInfoModel result = Bean.toModel(authInfo,new AuthInfoModel());
             result.setCompanyName(company);
@@ -89,7 +99,6 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         }
 
         //#2-2获取授权配置
-        AuthConfig authConfig = authConfigDAO.findAuthConfig(companyCode,machineModel);
         if(ValidationUtil.isEmpty(authConfig)){
             throw new DataValidateException("not found authConfig.");
         }

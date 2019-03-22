@@ -43,6 +43,7 @@ public class AuthConfigDAOImpl extends GenericDAOImpl<AuthConfig> implements Aut
             " A.MACHINE_MODEL AS machineModel , " +
             " A.COMPANY_NAME AS companyName , " +
             " A.PRIVATE_KEY AS privateKey , " +
+            " A.MAX_DEVICE_COUNT AS maxDeviceCount , " +
             " A.MAX_AUTH_COUNT AS maxAuthCount , " +
             " A.CREATE_TIME AS createTime , " +
             " ( " +

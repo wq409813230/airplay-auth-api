@@ -1,12 +1,12 @@
 package net.freeapis.airplayauth.dao.impl;
 
 import com.google.common.collect.Maps;
-import net.freeapis.core.foundation.model.Page;
-import net.freeapis.core.foundation.utils.ValidationUtil;
-import org.springframework.stereotype.Repository;
-import net.freeapis.core.mysql.GenericDAOImpl;
 import net.freeapis.airplayauth.dao.AuthHistoryDAO;
 import net.freeapis.airplayauth.face.entity.AuthHistory;
+import net.freeapis.core.foundation.model.Page;
+import net.freeapis.core.foundation.utils.ValidationUtil;
+import net.freeapis.core.mysql.GenericDAOImpl;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -72,5 +72,15 @@ public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements A
         }
         sql.append(" ORDER BY a.AUTH_TIME DESC");
         return this.findMapsByPage(sql.toString(),params,page);
+    }
+
+    @Override
+    public Integer findAuthSuccessCount(String company, String machineModel, String deviceMac) throws Exception {
+        String sql = " AND COMPANY_CODE =:COMPANY_CODE AND MACHINE_MODE = :MACHINE_MODEL AND DEVICE_MAC = :DEVICE_MAC AND AUTH_SUCCESS = 'Y'";
+        Map<String,Object> params = Maps.newHashMap();
+        params.put("COMPANY_CODE",company);
+        params.put("MACHINE_MODE",machineModel);
+        params.put("DEVICE_MAC",deviceMac);
+        return this.findCount(sql,params).intValue();
     }
 }

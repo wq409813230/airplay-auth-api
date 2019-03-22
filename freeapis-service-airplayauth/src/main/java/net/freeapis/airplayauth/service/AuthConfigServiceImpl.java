@@ -86,8 +86,8 @@ public class AuthConfigServiceImpl extends BaseServiceImpl<AuthConfigModel, Auth
         }
 
         //#3根据最大授权数生成授权码
-        int maxAuthCount = authConfigModel.getMaxAuthCount();
-        this.generateAuthCode(companyCode,machineModel,maxAuthCount);
+        int maxDeviceCount = authConfigModel.getMaxDeviceCount();
+        this.generateAuthCode(companyCode,machineModel,maxDeviceCount);
 
         //#4保存设备授权配置
         authConfigModel.setCompanyCode(companyCode);
@@ -154,10 +154,11 @@ public class AuthConfigServiceImpl extends BaseServiceImpl<AuthConfigModel, Auth
     public AuthConfigModel updateAuthConfig(AuthConfigModel authConfigModel) throws Exception {
         //#更新授权配置,公司和机型不允许修改
         AuthConfig authConfig = authConfigDAO.findById(authConfigModel.getSequenceNBR());
-        if(authConfig.getMaxAuthCount().intValue() != authConfigModel.getMaxAuthCount().intValue()){
-            this.generateAuthCode(authConfig.getCompanyCode(),authConfig.getMachineModel(),authConfigModel.getMaxAuthCount());
+        if(authConfig.getMaxDeviceCount().intValue() != authConfigModel.getMaxDeviceCount().intValue()){
+            this.generateAuthCode(authConfig.getCompanyCode(),authConfig.getMachineModel(),authConfigModel.getMaxDeviceCount());
         }
         authConfig.setMaxAuthCount(authConfigModel.getMaxAuthCount());
+        authConfig.setMaxDeviceCount(authConfigModel.getMaxDeviceCount());
         authConfig.setPrivateKey(authConfigModel.getPrivateKey());
         authConfig.setRecDate(new Date());
         authConfig.setRecUserId(RequestContext.getExeUserId());

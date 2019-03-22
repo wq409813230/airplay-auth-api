@@ -38,6 +38,7 @@ public class AuthConfig extends BaseEntity
 	private String companyName;
 	private String companyCode;
 	private String privateKey;
+	private Integer maxDeviceCount;
 	private Integer maxAuthCount;
 	private Date createTime;
 }

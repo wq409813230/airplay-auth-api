@@ -35,6 +35,7 @@ public class AuthConfigModel extends BaseModel
 	private String companyName;
 	private String companyCode;
 	private String privateKey;
+	private Integer maxDeviceCount;
 	private Integer maxAuthCount;
 	private Date createTime;
 }
