@@ -76,10 +76,10 @@ public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements A
 
     @Override
     public Integer findAuthSuccessCount(String company, String machineModel, String deviceMac) throws Exception {
-        String sql = " AND COMPANY_CODE =:COMPANY_CODE AND MACHINE_MODE = :MACHINE_MODEL AND DEVICE_MAC = :DEVICE_MAC AND AUTH_SUCCESS = 'Y'";
+        String sql = " AND COMPANY_CODE =:COMPANY_CODE AND MACHINE_MODEL = :MACHINE_MODEL AND DEVICE_MAC = :DEVICE_MAC AND AUTH_SUCCESS = 'Y'";
         Map<String,Object> params = Maps.newHashMap();
         params.put("COMPANY_CODE",company);
-        params.put("MACHINE_MODE",machineModel);
+        params.put("MACHINE_MODEL",machineModel);
         params.put("DEVICE_MAC",deviceMac);
         return this.findCount(sql,params).intValue();
     }

@@ -368,11 +368,8 @@ public class RSA {
         // 验证签名
         boolean status = verify(enStr2, publicKey, sign);
         System.out.println("状态:" + status);*/
-        String privateData = "hello";
-        String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnyEnD36fBM7I753USQrc3aOzT" +
-                "8jnDU4cxKrWuckTszPgx1bYTpMlh79nx2Eoeu+mmpeHiKQCV/f/MtCKqmTZLTDOL" +
-                "vLHmNiRGl538qRno6uEot4CujjISVoA7r1cp+54HtQg7fpJnQCnJEU0V60GuEtqv" +
-                "JOrUSb0Lg5xSqWUqowIDAQAB";
+        String privateData = "{'org':'Gaea','code':'12345678'}";
+        String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCHOPvwKR4kahVPNfWojs-JBRIocioI0c_OGzz0YkuW7xP5Ah-e4DO-VG13wPmoP_HtynR_oWmodeTzqsSgqJkN2_8QbkpF9J2l9AO6_uRr9j5od4k0nnexsakSDHC9svtbHtP72H1fDG9Iu499xkqgmoquTs9cMBxkg-1_pDXg4QIDAQAB";
         System.out.println(RSA.encryptByPublic(privateData,publicKey));
     }
 }
