@@ -1,4 +1,4 @@
-package net.freeapis.airplayauth;
+package net.freeapis.deviceauth;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Maps;

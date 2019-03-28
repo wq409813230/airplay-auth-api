@@ -58,6 +58,7 @@
         <module>freeapis-web-security</module>
         <module>freeapis-web-agency</module>
         <module>freeapis-web-airplayauth</module>
+        <module>freeapis-web-deviceauth</module>
     </modules>
 
     <build>

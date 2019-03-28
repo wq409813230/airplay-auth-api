@@ -4,6 +4,7 @@ import net.freeapis.common.sso.SsoConfig;
 import net.freeapis.core.config.EnableRestAPI;
 import net.freeapis.core.config.MysqlConfig;
 import net.freeapis.core.config.RedisConfig;
+import net.freeapis.core.config.commoncfg.ConcurrentConfig;
 import net.freeapis.core.config.commoncfg.GlobalConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Import;
 @EnableRestAPI
 @Import({
         GlobalConfig.class,
+        ConcurrentConfig.class,
         MysqlConfig.class,
         RedisConfig.class,
         SsoConfig.class
@@ -28,11 +30,12 @@ import org.springframework.context.annotation.Import;
 @ComponentScan({
         "net.freeapis.systemctl",
         "net.freeapis.security",
-        "net.freeapis.airplayauth"
+        "net.freeapis.airplayauth",
+        "net.freeapis.deviceauth"
 })
-public class AirplayauthWeb {
+public class DeviceAuthWeb {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(AirplayauthWeb.class, args);
+        SpringApplication.run(DeviceAuthWeb.class, args);
     }
 }
