@@ -76,7 +76,7 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         AuthConfig authConfig = authConfigDAO.findAuthConfig(companyCode,machineModel);
         AuthInfo authInfo = authInfoDAO.findAuthInfo(companyCode,machineModel,deviceMac);
         if(!ValidationUtil.isEmpty(authInfo)){
-            if(!authInfo.getPrivateKey().equals(privateKey)){
+            if(!authConfig.getPrivateKey().equals(privateKey)){
                 throw new DataValidateException("Invalid auth password.");
             }
             //#1-1判断认证次数是否超过上限
@@ -123,7 +123,6 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         authInfo.setMachineModel(machineModel);
         authInfo.setDeviceMac(deviceMac);
         authInfo.setAuthCode(authCode);
-        authInfo.setPrivateKey(privateKey);
         authInfo.setRecDate(new Date());
         authInfo.setRecStatus(CoreConstants.COMMON_ACTIVE);
         authInfo.setRecUserId(CoreConstants.COMMON_0);

@@ -33,7 +33,6 @@ public class AuthInfoModel extends BaseModel
 	private String machineModel;
 	private String deviceMac;
 	private String authCode;
-	private String privateKey;
 
 	private String companyName;
 }

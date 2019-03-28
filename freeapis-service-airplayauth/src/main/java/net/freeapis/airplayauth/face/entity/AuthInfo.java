@@ -37,6 +37,5 @@ public class AuthInfo extends BaseEntity
 	private String machineModel;
 	private String deviceMac;
 	private String authCode;
-	private String privateKey;
 }
 
