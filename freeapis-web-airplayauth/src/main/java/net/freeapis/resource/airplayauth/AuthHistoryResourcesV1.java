@@ -1,6 +1,7 @@
 package net.freeapis.resource.airplayauth;
 
 import net.freeapis.airplayauth.face.AuthHistoryService;
+import net.freeapis.core.foundation.constants.MessageConstants;
 import net.freeapis.core.foundation.constants.ParamConstants;
 import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.rest.BaseResources;
@@ -10,10 +11,7 @@ import net.freeapis.core.rest.containers.FreeapisResource;
 import net.freeapis.core.rest.utils.ResponseHelper;
 import net.freeapis.core.rest.utils.ResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <pre>
@@ -54,5 +52,13 @@ public class AuthHistoryResourcesV1 extends BaseResources {
     {
         Page page = new Page(length, start);
         return ResponseHelper.buildResponseModel(authHistoryService.getByPage(machineModel,companyName,page));
+    }
+
+    @FreeapisOperation(name = "deleteByDeviceMac", ApiLevel = APILevel.SUPERADMIN, description = "delete auth history by device mac")
+    @RequestMapping(value = "/deviceMac/{deviceMac}", method = RequestMethod.DELETE)
+    public ResponseModel<String> deleteByDeviceMac(@PathVariable String deviceMac) throws Exception
+    {
+        authHistoryService.deleteByDeviceMac(deviceMac);
+        return ResponseHelper.buildResponseModel(MessageConstants.SUCCEED);
     }
 }

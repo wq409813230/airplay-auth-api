@@ -30,4 +30,6 @@ import net.freeapis.core.foundation.orm.BaseService;
 public interface AuthHistoryService extends BaseService<AuthHistoryModel,AuthHistory>
 {
         Page getByPage(String machineModel, String companyName, Page page) throws Exception;
+
+        void deleteByDeviceMac(String deviceMac) throws Exception;
 }

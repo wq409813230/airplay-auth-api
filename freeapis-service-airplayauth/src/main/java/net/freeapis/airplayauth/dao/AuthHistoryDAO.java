@@ -34,4 +34,6 @@ public interface AuthHistoryDAO extends GenericDAO<AuthHistory>
     List<Map<String,Object>> findByPage(String machineModel, String companyName, Page page) throws Exception;
 
     Integer findAuthSuccessCount(String company,String machineModel,String deviceMac) throws Exception;
+
+    void deleteByDeviceMac(String deviceMac) throws Exception;
 }

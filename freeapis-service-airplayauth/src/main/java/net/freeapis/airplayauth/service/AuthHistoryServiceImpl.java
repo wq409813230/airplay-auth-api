@@ -42,4 +42,9 @@ public class AuthHistoryServiceImpl extends BaseServiceImpl<AuthHistoryModel, Au
         page.setList(authHistoryDAO.findByPage(machineModel,companyName,page));
         return page;
     }
+
+    @Override
+    public void deleteByDeviceMac(String deviceMac) throws Exception {
+        authHistoryDAO.deleteByDeviceMac(deviceMac);
+    }
 }

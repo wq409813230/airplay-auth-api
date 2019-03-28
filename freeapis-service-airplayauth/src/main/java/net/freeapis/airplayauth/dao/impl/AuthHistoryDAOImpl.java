@@ -43,8 +43,9 @@ public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements A
             " a.COMPANY_CODE AS companyCode , " +
             " a.DEVICE_MAC AS deviceMac , " +
             " count(1) AS authedTimes , " +
-            " a.AUTH_SUCCESS AS authSuccess , " +
-            " a.AUTH_TIME AS authTime, " +
+            " count(case when AUTH_SUCCESS = 'Y' then AUTH_SUCCESS end) as successCount, " +
+            " a.AUTH_SUCCESS AS lastAuthStatus , " +
+            " a.AUTH_TIME AS lastAuthTime, " +
             " a.FAILED_MESSAGE AS failedMessage " +
             "FROM " +
             " (SELECT * FROM AIRPLAYAUTH_AUTH_HISTORY ORDER BY SEQUENCE_NBR DESC) a " +
@@ -82,5 +83,12 @@ public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements A
         params.put("MACHINE_MODEL",machineModel);
         params.put("DEVICE_MAC",deviceMac);
         return this.findCount(sql,params).intValue();
+    }
+
+    @Override
+    public void deleteByDeviceMac(String deviceMac) throws Exception {
+        Map<String,Object> params = Maps.newHashMap();
+        params.put("deviceMac",deviceMac);
+        this.update("delete from " + this.tableName() + " where device_mac = :deviceMac",params);
     }
 }
