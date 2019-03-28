@@ -8,6 +8,7 @@ import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
 import net.freeapis.airplayauth.face.entity.AuthConfig;
 import net.freeapis.airplayauth.face.entity.AuthInfo;
 import net.freeapis.airplayauth.face.model.AuthInfoModel;
+import net.freeapis.core.cache.ConcurrentUtil;
 import net.freeapis.core.cache.Redis;
 import net.freeapis.core.foundation.constants.CoreConstants;
 import net.freeapis.core.foundation.exceptions.DataValidateException;
@@ -72,6 +73,15 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         String privateKey = authRequest.get("code");
         String companyCode = PyKit.pin(company);
 
+        /*String deviceMacMonitorKey = Redis.genKey(
+                AirplayauthConstants.CACHE_KEY_DEVICE_AUTH_MONITOR,companyCode,machineModel,deviceMac);
+        return ConcurrentUtil.runWithLock(deviceMacMonitorKey,
+                () -> doDeviceAuth(company,companyCode,machineModel,deviceMac,privateKey));*/
+        return doDeviceAuth(company,companyCode,machineModel,deviceMac,privateKey);
+    }
+
+    private AuthInfoModel doDeviceAuth(
+            String company,String companyCode,String machineModel,String deviceMac,String privateKey) throws Exception{
         //#1判断该设备是否之前认证成功过,如果认证成功则直接返回授权码
         AuthConfig authConfig = authConfigDAO.findAuthConfig(companyCode,machineModel);
         AuthInfo authInfo = authInfoDAO.findAuthInfo(companyCode,machineModel,deviceMac);

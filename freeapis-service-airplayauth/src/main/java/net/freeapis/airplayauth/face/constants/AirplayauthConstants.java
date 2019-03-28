@@ -15,6 +15,8 @@ public class AirplayauthConstants {
 
     public static final String CACHE_KEY_AUTH_CODES_POOL = "AIRPLAY_AUTH_CODES_POOL";
 
+    public static final String CACHE_KEY_DEVICE_AUTH_MONITOR = "DEVICE_AUTH_MONITOR";
+
     public static final String ALGORITHMSTR = "AES/CBC/PKCS7Padding";
 
     public static final String DICT_KEY_RSA_PRIVATE_KEY = "RSA_PRIVATE_KEY";
