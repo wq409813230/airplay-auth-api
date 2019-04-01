@@ -63,20 +63,24 @@ public class PacketSafeInterceptor {
 
     @Around("packetSafeGuarantee()")
     public Object makeSurePacketSafety(ProceedingJoinPoint pjp) throws Throwable {
-        String privateKey = dictionaryService.getValue(
-                CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS,
-                AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY);
-        Map<String,String> authBody = (Map)pjp.getArgs()[0];
-        String authInfo = authBody.get("authinfo");
-        authInfo = RSA.decryptByPrivate(authInfo,privateKey);
-        authBody.putAll(JSON.parseObject(authInfo,Map.class));
-        authBody.remove("authinfo");
-
         Object retVal = null;
         ResponseModel authResponse;
+        Map<String,String> authBody = (Map)pjp.getArgs()[0];
+        Map<String,Object> responsePacket = Maps.newHashMap();
+        Map<String,String> packetResult = Maps.newHashMap();
+
         try {
+            String privateKey = dictionaryService.getValue(
+                    CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS,
+                    AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY);
+            String authInfo = authBody.get("authinfo");
+            authInfo = RSA.decryptByPrivate(authInfo,privateKey);
+            authBody.putAll(JSON.parseObject(authInfo,Map.class));
+            authBody.remove("authinfo");
+
             retVal = pjp.proceed(new Object[]{authBody});
             authResponse = ResponseHelper.buildResponseModel(retVal);
+
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage());
@@ -85,13 +89,9 @@ public class PacketSafeInterceptor {
 
         this.recordAuthHistory(authBody, authResponse);
 
-        String clientPublicKey = authBody.get("pubkey");
-        int httpStatus = authResponse.getStatus();
-        Map<String,Object> responsePacket = Maps.newHashMap();
-        Map<String,String> packetResult = Maps.newHashMap();
         packetResult.put("mac",authBody.get("mac"));
-        packetResult.put("status",httpStatus == 200? "yes" : "no");
-        responsePacket.put("result",RSA.encryptByClientPubKey(JSON.toJSONString(packetResult),clientPublicKey));
+        packetResult.put("status",authResponse.getStatus() == 200? "yes" : "no");
+        responsePacket.put("result",RSA.encryptByClientPubKey(JSON.toJSONString(packetResult),authBody.get("pubkey")));
         responsePacket.put("reason",authResponse.getMessage());
 
         return JSON.toJSONString(responsePacket);
