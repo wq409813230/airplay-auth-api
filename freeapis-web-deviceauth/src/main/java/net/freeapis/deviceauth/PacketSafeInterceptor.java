@@ -68,10 +68,14 @@ public class PacketSafeInterceptor {
         Map<String,String> authBody = (Map)pjp.getArgs()[0];
         Map<String,Object> responsePacket = Maps.newHashMap();
         Map<String,String> packetResult = Maps.newHashMap();
+        String clientPublicKey = authBody.get("pubkey");
 
         try {
             if(authBody.isEmpty()){
                 throw new IllegalArgumentException("auth body must not be empty.");
+            }
+            if(ValidationUtil.isEmpty(clientPublicKey)){
+                throw new IllegalArgumentException("client public key must not be empty.");
             }
             String privateKey = dictionaryService.getValue(
                     CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS,
@@ -94,7 +98,7 @@ public class PacketSafeInterceptor {
 
         packetResult.put("mac",authBody.get("mac"));
         packetResult.put("status",authResponse.getStatus() == 200? "yes" : "no");
-        responsePacket.put("result",RSA.encryptByClientPubKey(JSON.toJSONString(packetResult),authBody.get("pubkey")));
+        responsePacket.put("result",RSA.encryptByClientPubKey(JSON.toJSONString(packetResult),clientPublicKey));
         responsePacket.put("reason",authResponse.getMessage());
 
         return JSON.toJSONString(responsePacket);
