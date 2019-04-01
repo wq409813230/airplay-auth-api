@@ -22,7 +22,7 @@ spring:
 
 freeapis:
   production_mode: Y
-  enableAuth: Y
+  enableAuth: N
   requestLimit:
     enable: Y
     period: 60
