@@ -6,32 +6,25 @@ server:
 spring:
   resources:
     #开发环境指定此值,以便加载swagger文档静态资源,其他环境不需要此值
-    static-locations: classpath:/
+    #static-locations: classpath:/
   redis:
-    host: 192.168.2.253
+    host: 172.18.149.81
     port: 6379
-    password: myRedis
-    database: 1
+    password: Czr18665377170
+    database: 0
     pool:
       max-idle: 300
       max-wait: 3000
-  data:
-    mongodb:
-      host: 192.168.2.253
-      port: 27017
-      database: airplayauth
-      username: airplayauth
-      password:
   jpa:
     hibernate:
       naming:
         strategy: org.hibernate.cfg.ImprovedNamingStrategy
 
 freeapis:
-  production_mode: N
-  enableAuth: N
+  production_mode: Y
+  enableAuth: Y
   requestLimit:
-    enable: N
+    enable: Y
     period: 60
     frequency:
       nonget: 20
@@ -40,19 +33,19 @@ freeapis:
     enable: true
     enable-module-register: false
     name: 文档名称
-    host: http://192.168.2.253/
+    host: http://172.18.149.81/
     enable-db-register: true
   concurrent:
-    core-pool-size: 10
-    max-pool-size: 20
+    core-pool-size: 50
+    max-pool-size: 100
     queue-capacity: 10
     thread-name-prefix: FreeapisExecutor-
   core:
     mysql:
-      url: jdbc:mysql://192.168.2.253:3306/airplay-auth?useUnicode=true&amp;characterEncoding=utf8
+      url: jdbc:mysql://172.18.149.81:3306/airplay_auth?useUnicode=true&amp;characterEncoding=utf8
       username: root
-      password: root
-      initial-size: 1
+      password: Czr18665377170
+      initial-size: 20
       max-active: 200
       min-idle: 10
       max-wait: 30000
