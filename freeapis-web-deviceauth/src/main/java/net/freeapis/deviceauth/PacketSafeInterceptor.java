@@ -70,6 +70,9 @@ public class PacketSafeInterceptor {
         Map<String,String> packetResult = Maps.newHashMap();
 
         try {
+            if(authBody.isEmpty()){
+                throw new IllegalArgumentException("auth body must not be empty.");
+            }
             String privateKey = dictionaryService.getValue(
                     CoreConstants.CODE_SUPER_ADMIN, DictionaryConstants.DICT_CODE_SYS_PARAMS,
                     AirplayauthConstants.DICT_KEY_RSA_PRIVATE_KEY);
