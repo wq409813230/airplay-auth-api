@@ -21,10 +21,10 @@ spring:
         strategy: org.hibernate.cfg.ImprovedNamingStrategy
 
 freeapis:
-  production_mode: Y
+  production_mode: N
   enableAuth: N
   requestLimit:
-    enable: Y
+    enable: N
     period: 60
     frequency:
       nonget: 20
