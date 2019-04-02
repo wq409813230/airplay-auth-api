@@ -154,9 +154,7 @@ public class AuthConfigServiceImpl extends BaseServiceImpl<AuthConfigModel, Auth
     public AuthConfigModel updateAuthConfig(AuthConfigModel authConfigModel) throws Exception {
         //#更新授权配置,公司和机型不允许修改
         AuthConfig authConfig = authConfigDAO.findById(authConfigModel.getSequenceNBR());
-        if(authConfig.getMaxDeviceCount().intValue() != authConfigModel.getMaxDeviceCount().intValue()){
-            this.generateAuthCode(authConfig.getCompanyCode(),authConfig.getMachineModel(),authConfigModel.getMaxDeviceCount());
-        }
+        this.generateAuthCode(authConfig.getCompanyCode(),authConfig.getMachineModel(),authConfigModel.getMaxDeviceCount());
         authConfig.setMaxAuthCount(authConfigModel.getMaxAuthCount());
         authConfig.setMaxDeviceCount(authConfigModel.getMaxDeviceCount());
         authConfig.setPrivateKey(authConfigModel.getPrivateKey());

@@ -8,7 +8,6 @@ import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
 import net.freeapis.airplayauth.face.entity.AuthConfig;
 import net.freeapis.airplayauth.face.entity.AuthInfo;
 import net.freeapis.airplayauth.face.model.AuthInfoModel;
-import net.freeapis.core.cache.ConcurrentUtil;
 import net.freeapis.core.cache.Redis;
 import net.freeapis.core.foundation.constants.CoreConstants;
 import net.freeapis.core.foundation.exceptions.DataValidateException;
@@ -90,7 +89,8 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
                 throw new DataValidateException("Invalid auth password.");
             }
             //#1-1判断认证次数是否超过上限
-            int authSuccessCount = authHistoryDAO.findAuthSuccessCount(companyCode,machineModel,deviceMac);
+            int authSuccessCount = Redis.increment(1L,
+                    AirplayauthConstants.DEVICE_AUTH_COUNT_MONITOR,companyCode,machineModel,deviceMac).intValue();
             if(authConfig.getMaxAuthCount() <= authSuccessCount){
                 throw new DataValidateException("can not beyond the limit of auth count");
             }

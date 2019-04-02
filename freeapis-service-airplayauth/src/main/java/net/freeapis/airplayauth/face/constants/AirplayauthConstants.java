@@ -22,4 +22,6 @@ public class AirplayauthConstants {
     public static final String DICT_KEY_RSA_PRIVATE_KEY = "RSA_PRIVATE_KEY";
 
     public static final String DICT_KEY_RSA_PUBLIC_KEY = "RSA_PUBLIC_KEY";
+
+    public static final String DEVICE_AUTH_COUNT_MONITOR = "DEVICE_AUTH_COUNT_MONITOR";
 }

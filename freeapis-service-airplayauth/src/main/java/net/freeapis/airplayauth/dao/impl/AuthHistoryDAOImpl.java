@@ -2,7 +2,9 @@ package net.freeapis.airplayauth.dao.impl;
 
 import com.google.common.collect.Maps;
 import net.freeapis.airplayauth.dao.AuthHistoryDAO;
+import net.freeapis.airplayauth.face.constants.AirplayauthConstants;
 import net.freeapis.airplayauth.face.entity.AuthHistory;
+import net.freeapis.core.cache.Redis;
 import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.foundation.utils.ValidationUtil;
 import net.freeapis.core.mysql.GenericDAOImpl;
@@ -87,8 +89,12 @@ public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements A
 
     @Override
     public void deleteByDeviceMac(String deviceMac) throws Exception {
+        String findSql = " AND DEVICE_MAC = :DEVICE_MAC";
         Map<String,Object> params = Maps.newHashMap();
-        params.put("deviceMac",deviceMac);
-        this.update("delete from " + this.tableName() + " where device_mac = :deviceMac",params);
+        params.put("DEVICE_MAC",deviceMac);
+        AuthHistory currentHistory = this.findFirst(findSql,params);
+        Redis.remove(AirplayauthConstants.DEVICE_AUTH_COUNT_MONITOR,
+                currentHistory.getCompanyCode(),currentHistory.getMachineModel(),deviceMac);
+        this.update("DELETE FROM " + this.tableName() + " WHERE DEVICE_MAC = :DEVICE_MAC",params);
     }
 }
