@@ -91,7 +91,7 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
             //#1-1判断认证次数是否超过上限
             int authSuccessCount = Redis.increment(1L,
                     AirplayauthConstants.DEVICE_AUTH_COUNT_MONITOR,companyCode,machineModel,deviceMac).intValue();
-            if(authConfig.getMaxAuthCount() <= authSuccessCount){
+            if(authConfig.getMaxAuthCount() < authSuccessCount){
                 throw new DataValidateException("can not beyond the limit of auth count");
             }
             AuthInfoModel result = Bean.toModel(authInfo,new AuthInfoModel());
