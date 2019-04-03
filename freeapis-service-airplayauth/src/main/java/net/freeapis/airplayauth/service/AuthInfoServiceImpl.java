@@ -137,6 +137,8 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         authInfo.setRecStatus(CoreConstants.COMMON_ACTIVE);
         authInfo.setRecUserId(CoreConstants.COMMON_0);
         authInfoDAO.insert(authInfo);
+        
+        Redis.increment(1L,AirplayauthConstants.DEVICE_AUTH_COUNT_MONITOR,companyCode,machineModel,deviceMac).intValue();
 
         AuthInfoModel result = Bean.toModel(authInfo,new AuthInfoModel());
         result.setCompanyName(company);
