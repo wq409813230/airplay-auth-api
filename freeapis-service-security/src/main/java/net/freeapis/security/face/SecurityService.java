@@ -69,6 +69,13 @@ public interface SecurityService extends BaseService<PrincipalModel, Principal>{
 	 * @throws Exception
 	 */
 	void deletePrincipal(Long userId) throws Exception;
+
+	/**
+	 * 删除安全认证信息
+	 * @param userId
+	 * @throws Exception
+	 */
+	void deleteSecurityInfo(Long userId) throws Exception;
 	/**
 	 * TODO.更新主体信息.此方法只更新主体信息的普通非安全属性，
 	 * 如用户名，昵称，性别等，主体的安全属性使用专门的业务方法更新

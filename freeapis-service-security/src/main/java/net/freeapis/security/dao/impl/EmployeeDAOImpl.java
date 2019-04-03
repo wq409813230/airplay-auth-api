@@ -45,7 +45,7 @@ public class EmployeeDAOImpl extends GenericDAOImpl<Employee> implements Employe
     @Override
     public void update(Employee employee) throws Exception {
         super.update(employee);
-        Redis.setSingle(employee, employee.getUserId().toString());
+        Redis.removeSingle(this.getEntityClass(), employee.getUserId().toString());
     }
 
     @Override
@@ -269,4 +269,13 @@ public class EmployeeDAOImpl extends GenericDAOImpl<Employee> implements Employe
 		}
     	return this.findMaps(sql.toString(), params);
     }
+
+	@Override
+	public void deleteByUserId(Long userId) throws Exception {
+		Employee currentEmployee = this.findByUserId(userId);
+		if(!ValidationUtil.isEmpty(currentEmployee)){
+			this.delete(currentEmployee.getSequenceNBR());
+			Redis.removeSingle(this.getEntityClass(), currentEmployee.getUserId().toString());
+		}
+	}
 }

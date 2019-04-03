@@ -35,6 +35,8 @@ public interface EmployeeService extends BaseService<EmployeeModel,Employee>
 
 	EmployeeModel createEmployee(EmployeeModel employeeModel) throws Exception;
 
+	void deleteEmployee(Long userId) throws Exception;
+
 	EmployeeModel updateEmployee(EmployeeModel employeeModel) throws Exception;
 
 	EmployeeModel getEmployee(Long id) throws Exception;

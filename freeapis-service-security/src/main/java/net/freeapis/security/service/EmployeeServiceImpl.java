@@ -107,6 +107,12 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeModel, Employee
     }
 
     @Override
+    public void deleteEmployee(Long userId) throws Exception {
+        securityService.deleteSecurityInfo(userId);
+        employeeDAO.deleteByUserId(userId);
+    }
+
+    @Override
     public EmployeeModel updateEmployee(EmployeeModel employeeModel) throws Exception {
         Employee currentEmployee = employeeDAO.findByUserId(employeeModel.getUserId());
         if (ValidationUtil.isEmpty(currentEmployee)) {

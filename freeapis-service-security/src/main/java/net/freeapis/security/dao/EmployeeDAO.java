@@ -113,4 +113,6 @@ public interface EmployeeDAO extends GenericDAO<Employee> {
 	 * @throws Exception
 	 */
 	List<Map<String, Object>> findEmployeesByDepartmentCode(String agencyCode, String departmentCode, String localStatus)throws Exception;
+
+	void deleteByUserId(Long userId) throws Exception;
 }

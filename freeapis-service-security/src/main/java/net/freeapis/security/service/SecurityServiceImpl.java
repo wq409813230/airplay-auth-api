@@ -180,6 +180,23 @@ public class SecurityServiceImpl extends BaseServiceImpl<PrincipalModel, Princip
     }
 
     @Override
+    public void deleteSecurityInfo(Long userId) throws Exception {
+        //清除登录session
+        this.cleanLoginCache(userId);
+
+        //删除登录账号信息
+        List<LoginInfo> userLoginInfos = loginInfoDAO.findLoginInfos(userId);
+        if(!ValidationUtil.isEmpty(userLoginInfos)){
+            for(LoginInfo loginInfo : userLoginInfos){
+                loginInfoDAO.deleteByLoginId(RequestContext.getAgencyCode(),loginInfo.getLoginId());
+            }
+        }
+
+        //删除认证主体信息
+        this.deletePrincipal(userId);
+    }
+
+    @Override
     public PrincipalModel updatePrincipal(PrincipalModel principalModel) throws Exception {
         Principal currentPrincipal = principalDAO.findByUserId(principalModel.getUserId());
         if (ValidationUtil.isEmpty(currentPrincipal)) {
