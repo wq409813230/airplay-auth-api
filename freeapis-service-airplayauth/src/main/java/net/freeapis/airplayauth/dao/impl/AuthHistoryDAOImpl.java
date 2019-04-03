@@ -58,9 +58,13 @@ public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements A
 
 
     @Override
-    public List<Map<String,Object>> findByPage(String machineModel, String companyName, Page page) throws Exception{
+    public List<Map<String,Object>> findByPage(String deviceMac,String machineModel, String companyName, Page page) throws Exception{
         StringBuilder sql = new StringBuilder(findSql);
         Map<String,Object> params = Maps.newHashMap();
+        if(!ValidationUtil.isEmpty(deviceMac)){
+            sql.append(" AND a.DEVICE_MAC = :DEVICE_MAC");
+            params.put("DEVICE_MAC",deviceMac);
+        }
         if(!ValidationUtil.isEmpty(companyName)){
             sql.append(" AND (")
                     .append(like("a.COMPANY_NAME",":COMPANY"))

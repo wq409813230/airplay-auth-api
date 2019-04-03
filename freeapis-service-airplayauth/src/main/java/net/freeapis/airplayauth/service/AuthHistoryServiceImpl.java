@@ -38,8 +38,8 @@ public class AuthHistoryServiceImpl extends BaseServiceImpl<AuthHistoryModel, Au
     private AuthHistoryDAO authHistoryDAO;
 
     @Override
-    public Page getByPage(String machineModel, String companyName, Page page) throws Exception {
-        page.setList(authHistoryDAO.findByPage(machineModel,companyName,page));
+    public Page getByPage(String deviceMac,String machineModel, String companyName, Page page) throws Exception {
+        page.setList(authHistoryDAO.findByPage(deviceMac,machineModel,companyName,page));
         return page;
     }
 

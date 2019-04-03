@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public interface AuthHistoryDAO extends GenericDAO<AuthHistory>
 {
-    List<Map<String,Object>> findByPage(String machineModel, String companyName, Page page) throws Exception;
+    List<Map<String,Object>> findByPage(String deviceMac,String machineModel, String companyName, Page page) throws Exception;
 
     Integer findAuthSuccessCount(String company,String machineModel,String deviceMac) throws Exception;
 

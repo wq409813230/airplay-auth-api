@@ -45,13 +45,14 @@ public class AuthHistoryResourcesV1 extends BaseResources {
     @FreeapisOperation(name = "getAuthHistoryByPage", ApiLevel = APILevel.SUPERADMIN, description = "后台分页获取认证历史记录信息")
     @RequestMapping(value = "/manage/page", method = RequestMethod.GET)
     public ResponseModel<Page> getAuthHistoryByPage(
+            @RequestParam(required = false) String deviceMac,
             @RequestParam(required = false) String machineModel,
             @RequestParam(required = false) String companyName,
             @RequestParam(value = ParamConstants.OFFSET,defaultValue = "0") int start,
             @RequestParam(value = ParamConstants.LENGTH,defaultValue  ="10") int length) throws Exception
     {
         Page page = new Page(length, start);
-        return ResponseHelper.buildResponseModel(authHistoryService.getByPage(machineModel,companyName,page));
+        return ResponseHelper.buildResponseModel(authHistoryService.getByPage(deviceMac,machineModel,companyName,page));
     }
 
     @FreeapisOperation(name = "deleteByDeviceMac", ApiLevel = APILevel.SUPERADMIN, description = "delete auth history by device mac")
