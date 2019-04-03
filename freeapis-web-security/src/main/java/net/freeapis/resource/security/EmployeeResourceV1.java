@@ -83,6 +83,13 @@ public class EmployeeResourceV1 extends BaseResources {
 		page = employeeService.getByPage(RequestContext.getAgencyCode(), departmentCode, userName, employeeCode, page,orderby, order);
 		return ResponseHelper.buildResponseModel(page);
 	}
+	
+	@FreeapisOperation(name = "updateEmployeePassword", ApiLevel = APILevel.AGENCY,  description = "员工修改密码")
+	@RequestMapping(value = "/password", method = RequestMethod.PUT)
+	public ResponseModel<String> updatePublicUserPassword(@RequestBody EmployeeModel employeeModel) throws Exception{
+		employeeService.updatePasswordBySelf(employeeModel);
+		return ResponseHelper.buildResponseModel(MessageConstants.SUCCEED);
+	}
 
 	@FreeapisOperation(name = "getBrieflyEmployee", ApiLevel = APILevel.SUPERADMIN, description = "获取员工简要信息")
 	@RequestMapping(value = "/brieflyEmployee", method = RequestMethod.GET)
