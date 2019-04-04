@@ -15,6 +15,7 @@ spring:
     pool:
       max-idle: 300
       max-wait: 3000
+      max-active: 100
   jpa:
     hibernate:
       naming:
