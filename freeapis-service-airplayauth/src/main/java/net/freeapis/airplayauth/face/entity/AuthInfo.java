@@ -33,6 +33,7 @@ import javax.persistence.Table;
 public class AuthInfo extends BaseEntity
 {
 	private static final long serialVersionUID = 1L;
+	private Long authConfigId;
 	private String companyCode;
 	private String machineModel;
 	private String deviceMac;

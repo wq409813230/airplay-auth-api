@@ -13,7 +13,6 @@ import net.freeapis.core.foundation.constants.MessageConstants;
 import net.freeapis.core.foundation.context.RequestContext;
 import net.freeapis.core.foundation.exceptions.DataNotFoundException;
 import net.freeapis.core.foundation.exceptions.DataValidateException;
-import net.freeapis.core.foundation.exceptions.DuplicateException;
 import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.foundation.utils.Bean;
 import net.freeapis.core.foundation.utils.PyKit;
@@ -82,7 +81,7 @@ public class AuthConfigServiceImpl extends BaseServiceImpl<AuthConfigModel, Auth
         String companyCode = PyKit.pin(companyName);
         AuthConfig authConfig = authConfigDAO.findAuthConfig(companyCode,machineModel);
         if(!ValidationUtil.isEmpty(authConfig)){
-            throw new DuplicateException("已经为" + companyName + "授权过机型" + machineModel);
+            throw new DataValidateException("已经为" + companyName + "授权过机型" + machineModel);
         }
 
         //#3根据最大授权数生成授权码

@@ -29,6 +29,7 @@ import net.freeapis.core.foundation.orm.BaseModel;
 public class AuthInfoModel extends BaseModel
 {
 	private static final long serialVersionUID = 1L;
+    private Long authConfigId;
 	private String companyCode;
 	private String machineModel;
 	private String deviceMac;

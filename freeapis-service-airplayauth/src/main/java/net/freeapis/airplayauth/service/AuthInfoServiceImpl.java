@@ -11,6 +11,7 @@ import net.freeapis.airplayauth.face.model.AuthInfoModel;
 import net.freeapis.core.cache.Redis;
 import net.freeapis.core.foundation.constants.CoreConstants;
 import net.freeapis.core.foundation.exceptions.DataValidateException;
+import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.foundation.sequence.SequenceGenerator;
 import net.freeapis.core.foundation.utils.Bean;
 import net.freeapis.core.foundation.utils.PyKit;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -79,6 +81,24 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         return doDeviceAuth(company,companyCode,machineModel,deviceMac,privateKey);
     }
 
+    @Override
+    public Page getAuthInfos(Long authConfigId, String deviceMac, Page page) throws Exception {
+        List<AuthInfoModel> result =
+                Bean.toModels(authInfoDAO.findAuthInfosByConfigId(authConfigId,deviceMac,page),this.getModelClass());
+        page.setList(result);
+        return page;
+    }
+
+    @Override
+    public AuthInfoModel deleteAuthInfo(Long id) throws Exception {
+        //删除认证信息
+        AuthInfo authInfo = authInfoDAO.deleteAuthInfo(id);
+        //删除认证记录
+        authHistoryDAO.deleteByDeviceMac(authInfo.getDeviceMac());
+
+        return Bean.toModel(authInfo,new AuthInfoModel());
+    }
+
     private AuthInfoModel doDeviceAuth(
             String company,String companyCode,String machineModel,String deviceMac,String privateKey) throws Exception{
         //#1判断该设备是否之前认证成功过,如果认证成功则直接返回授权码
@@ -129,6 +149,7 @@ public class AuthInfoServiceImpl extends BaseServiceImpl<AuthInfoModel, AuthInfo
         //#2-5记录认证信息
         authInfo = new AuthInfo();
         authInfo.setSequenceNBR(sequenceGenerator.getNextValue());
+        authInfo.setAuthConfigId(authConfig.getSequenceNBR());
         authInfo.setCompanyCode(companyCode);
         authInfo.setMachineModel(machineModel);
         authInfo.setDeviceMac(deviceMac);

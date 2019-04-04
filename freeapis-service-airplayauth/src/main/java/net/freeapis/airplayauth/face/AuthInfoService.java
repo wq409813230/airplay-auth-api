@@ -1,9 +1,9 @@
 package net.freeapis.airplayauth.face;
 
-import net.freeapis.core.foundation.model.Page;
 import net.freeapis.airplayauth.face.entity.AuthInfo;
-import net.freeapis.core.foundation.orm.BaseService;
 import net.freeapis.airplayauth.face.model.AuthInfoModel;
+import net.freeapis.core.foundation.model.Page;
+import net.freeapis.core.foundation.orm.BaseService;
 
 import java.util.Map;
 
@@ -37,4 +37,20 @@ public interface AuthInfoService extends BaseService<AuthInfoModel, AuthInfo> {
      * @throws Exception
      */
     AuthInfoModel createAuthInfo(Map<String,String> authRequest) throws Exception;
+
+    /**
+     * 删除设备认证信息
+     * @param id
+     * @throws Exception
+     */
+    AuthInfoModel deleteAuthInfo(Long id) throws Exception;
+
+    /**
+     * 分页获取设备认证信息列表
+     * @param authConfigId
+     * @param page
+     * @return
+     * @throws Exception
+     */
+    Page getAuthInfos(Long authConfigId,String deviceMac,Page page) throws Exception;
 }

@@ -4,10 +4,14 @@ import com.google.common.collect.Maps;
 import net.freeapis.airplayauth.dao.AuthInfoDAO;
 import net.freeapis.airplayauth.face.entity.AuthInfo;
 import net.freeapis.core.cache.Redis;
+import net.freeapis.core.foundation.constants.MessageConstants;
+import net.freeapis.core.foundation.exceptions.DataNotFoundException;
+import net.freeapis.core.foundation.model.Page;
 import net.freeapis.core.foundation.utils.ValidationUtil;
 import net.freeapis.core.mysql.GenericDAOImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +41,17 @@ public class AuthInfoDAOImpl extends GenericDAOImpl<AuthInfo> implements AuthInf
 {
 
     @Override
+    public AuthInfo deleteAuthInfo(Long id) throws Exception {
+        AuthInfo authInfo = this.findById(id);
+        if(ValidationUtil.isEmpty(authInfo)){
+            throw new DataNotFoundException(MessageConstants.DATA_NOT_FOUND);
+        }
+        this.delete(id);
+        Redis.remove(authInfo.getCompanyCode(),authInfo.getMachineModel(),authInfo.getDeviceMac());
+        return authInfo;
+    }
+
+    @Override
     public Integer findAuthedCount(String companyCode, String machineModel) throws Exception {
         Map<String,Object> params = Maps.newHashMap();
         params.put("COMPANY_CODE",companyCode);
@@ -59,5 +74,20 @@ public class AuthInfoDAOImpl extends GenericDAOImpl<AuthInfo> implements AuthInf
             }
         }
         return authInfo;
+    }
+
+    @Override
+    public List<AuthInfo> findAuthInfosByConfigId(Long authConfigId,String deviceMac, Page page) throws Exception {
+        StringBuilder sql = new StringBuilder();
+        Map<String,Object> params = Maps.newHashMap();
+
+        sql.append(" AND AUTH_CONFIG_ID = :AUTH_CONFIG_ID ");
+        params.put("AUTH_CONFIG_ID",authConfigId);
+
+        if(!ValidationUtil.isEmpty(deviceMac)){
+            sql.append(" AND DEVICE_MAC = :DEVICE_MAC ");
+            params.put("DEVICE_MAC",deviceMac);
+        }
+        return this.paginate(sql.toString(),params,page,null,null);
     }
 }
