@@ -97,8 +97,10 @@ public class AuthHistoryDAOImpl extends GenericDAOImpl<AuthHistory> implements A
         Map<String,Object> params = Maps.newHashMap();
         params.put("DEVICE_MAC",deviceMac);
         AuthHistory currentHistory = this.findFirst(findSql,params);
-        Redis.remove(AirplayauthConstants.DEVICE_AUTH_COUNT_MONITOR,
+        if(!ValidationUtil.isEmpty(currentHistory)){
+            Redis.remove(AirplayauthConstants.DEVICE_AUTH_COUNT_MONITOR,
                 currentHistory.getCompanyCode(),currentHistory.getMachineModel(),deviceMac);
+        }
         this.update("DELETE FROM " + this.tableName() + " WHERE DEVICE_MAC = :DEVICE_MAC",params);
     }
 }
