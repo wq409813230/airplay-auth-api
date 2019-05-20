@@ -47,7 +47,7 @@ public class AuthInfoDAOImpl extends GenericDAOImpl<AuthInfo> implements AuthInf
             throw new DataNotFoundException(MessageConstants.DATA_NOT_FOUND);
         }
         this.delete(id);
-        Redis.remove(authInfo.getCompanyCode(),authInfo.getMachineModel(),authInfo.getDeviceMac());
+        Redis.removeSingle(AuthInfo.class,authInfo.getCompanyCode(),authInfo.getMachineModel(),authInfo.getDeviceMac());
         return authInfo;
     }
 
